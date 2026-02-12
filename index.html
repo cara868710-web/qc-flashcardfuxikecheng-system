@@ -681,10 +681,9 @@ function updateCard() {
         imgEl.style.display = 'none';
     }
     
-    // Reset flip state
-    if (isFlipped) {
-        document.getElementById('flashcard').classList.remove('flipped');
-        isFlipped = false;
+    // Reset flip state (ជានិច្ច)
+document.getElementById('flashcard').classList.remove('flipped');
+isFlipped = false;
     }
     
     // Auto-play audio
@@ -853,3 +852,4 @@ init();
 </script>
 </body>
 </html>
+
