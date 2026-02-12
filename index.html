@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QC Flash Cards</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Orbitron:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ─── Design Tokens ─────────────────────────────────────────────── */
+        :root {
+            --bg:       #070b1a;
+            --surface:  #0f1630;
+            --card:     #141d38;
+            --border:   #1e2d52;
+            --primary:  #4f8ef7;
+            --accent:   #f4c430;
+            --success:  #22d472;
+            --danger:   #ff4d6d;
+            --text:     #e8eaf6;
+            --muted:    #7b89b8;
+            --radius:   20px;
+            --shadow:   0 24px 60px rgba(0,0,0,0.5);
+        }
+
+        /* ─── Reset & Base ──────────────────────────────────────────────── */
+        *, *::before, *::after {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            height: 100%;
+            font-family: 'DM Sans', 'Battambang', sans-serif;
+        }
+        body {
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px 15px 40px;
+            overflow-x: hidden;
+        }
+
+        /* ─── Animated Background ───────────────────────────────────────── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 20% 10%, rgba(79,142,247,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(244,196,48,0.07) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── Container ─────────────────────────────────────────────────── */
+        .wrap {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 460px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* ─── Header Brand ──────────────────────────────────────────────── */
+        .brand-header {
+            text-align: center;
+            padding: 28px 20px 20px;
+        }
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(79,142,247,0.12);
+            border: 1px solid rgba(79,142,247,0.3);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--primary);
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+        .brand-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--text);
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+        .brand-title span {
+            color: var(--accent);
+        }
+        .brand-sub {
+            font-family: 'Battambang', sans-serif;
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        /* ─── Card ──────────────────────────────────────────────────────── */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            box-shadow: var(--shadow);
+        }
+
+        /* ─── Flash Card Screen ─────────────────────────────────────────── */
+        .progress-wrap {
+            margin-bottom: 20px;
+        }
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .progress-label {
+            font-family: 'Battambang', sans-serif;
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .progress-count {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: var(--surface);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        /* ─── Flash Card Container ──────────────────────────────────────── */
+        .flashcard-container {
+            perspective: 1000px;
+            margin-bottom: 24px;
+            min-height: 420px;
+        }
+
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 420px;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .card-front {
+            z-index: 2;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, var(--surface) 0%, #0a0e1c 100%);
+        }
+
+        /* ─── Card Content ──────────────────────────────────────────────── */
+        .card-label {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: rgba(79,142,247,0.15);
+            border: 1px solid rgba(79,142,247,0.3);
+            border-radius: 100px;
+            padding: 4px 12px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        .card-back .card-label {
+            background: rgba(244,196,48,0.15);
+            border-color: rgba(244,196,48,0.3);
+            color: var(--accent);
+        }
+
+        .chinese-display {
+            font-size: 72px;
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 20px;
+            line-height: 1;
+            text-shadow: 0 4px 12px rgba(79,142,247,0.3);
+        }
+
+        .khmer-display {
+            font-family: 'Battambang', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .image-display {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-top: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .tap-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Battambang', sans-serif;
+            font-size: 12px;
+            color: var(--muted);
+            opacity: 0.7;
+        }
+
+        .tap-icon {
+            font-size: 20px;
+            animation: tap 1.5s infinite;
+        }
+
+        @keyframes tap {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* ─── Audio Controls ────────────────────────────────────────────── */
+        .audio-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .speak-btn {
+            width: 64px;
+            height: 64px;
+            background: rgba(79,142,247,0.1);
+            border: 2px solid rgba(79,142,247,0.35);
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .speak-btn:active {
+            background: rgba(79,142,247,0.25);
+            transform: scale(0.93);
+        }
+
+        .speak-btn.speaking {
+            background: rgba(79,142,247,0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79,142,247,0.18);
+        }
+
+        .sp-icon {
+            font-size: 28px;
+        }
+
+        .wave-bars {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 12px;
+        }
+
+        .wave-bars span {
+            display: block;
+            width: 3px;
+            border-radius: 3px;
+            background: var(--primary);
+            height: 4px;
+        }
+
+        .speak-btn.speaking .wave-bars span:nth-child(1) { animation: bar 0.7s 0.0s ease-in-out infinite; }
+        .speak-btn.speaking .wave-bars span:nth-child(2) { animation: bar 0.7s 0.1s ease-in-out infinite; }
+        .speak-btn.speaking .wave-bars span:nth-child(3) { animation: bar 0.7s 0.2s ease-in-out infinite; }
+        .speak-btn.speaking .wave-bars span:nth-child(4) { animation: bar 0.7s 0.3s ease-in-out infinite; }
+        .speak-btn.speaking .wave-bars span:nth-child(5) { animation: bar 0.7s 0.15s ease-in-out infinite; }
+
+        @keyframes bar {
+            0%, 100% { height: 3px; }
+            50% { height: 12px; }
+        }
+
+        .speed-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .speed-lbl {
+            font-family: 'Battambang', sans-serif;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .speed-toggle {
+            display: flex;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .speed-toggle button {
+            padding: 4px 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--muted);
+            transition: all 0.15s;
+        }
+
+        .speed-toggle button.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* ─── Navigation Buttons ────────────────────────────────────────── */
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            cursor: pointer;
+            font-family: 'Battambang', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-prev {
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .btn-prev:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: rgba(79,142,247,0.08);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, var(--primary) 0%, #6fa8ff 100%);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 6px 20px rgba(79,142,247,0.3);
+        }
+
+        .btn-next:hover:not(:disabled) {
+            box-shadow: 0 8px 24px rgba(79,142,247,0.4);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: scale(0.96);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ─── Action Buttons ────────────────────────────────────────────── */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'Battambang', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-action:hover {
+            border-color: var(--primary);
+            background: rgba(79,142,247,0.08);
+        }
+
+        .btn-action:active {
+            transform: scale(0.96);
+        }
+
+        /* ─── Footer ────────────────────────────────────────────────────── */
+        .footer {
+            text-align: center;
+            padding: 18px 0 0;
+            font-size: 11px;
+            color: rgba(123,137,184,0.5);
+            letter-spacing: 0.5px;
+        }
+
+        /* ─── Animations ────────────────────────────────────────────────── */
+        .fade-in {
+            animation: fadeIn 0.35s ease both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.4s cubic-bezier(0.4, 0.0, 0.2, 1) both;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    <!-- ── Brand Header ─────────────────────────────────────────────── -->
+    <div class="brand-header">
+        <div class="brand-badge">📚 Flash Cards</div>
+        <div class="brand-title">QC<span>LEARN</span></div>
+        <div class="brand-sub">រៀនពាក្យ QC ជាមួយ Flash Cards</div>
+    </div>
+
+    <!-- ── Main Card ────────────────────────────────────────────────── -->
+    <div class="card fade-in">
+        
+        <!-- Progress -->
+        <div class="progress-wrap">
+            <div class="progress-meta">
+                <span class="progress-label">វឌ្ឍនភាព</span>
+                <span class="progress-count" id="progressCount">1 / 49</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Audio Controls -->
+        <div class="audio-controls">
+            <button class="speak-btn" id="speakBtn" onclick="playVoice()">
+                <span class="sp-icon">🔊</span>
+                <div class="wave-bars">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </button>
+        </div>
+
+        <div class="speed-row">
+            <span class="speed-lbl">ល្បឿន:</span>
+            <div class="speed-toggle">
+                <button class="active" onclick="setSpeed(1.0, this)">1×</button>
+                <button onclick="setSpeed(0.65, this)">0.6×</button>
+                <button onclick="setSpeed(0.45, this)">0.4×</button>
+            </div>
+        </div>
+
+        <!-- Flash Card -->
+        <div class="flashcard-container">
+            <div class="flashcard" id="flashcard" onclick="flipCard()">
+                <!-- Front -->
+                <div class="card-face card-front">
+                    <div class="card-label">中文</div>
+                    <div class="chinese-display" id="chineseText">起泡</div>
+                    <div class="tap-hint">
+                        <span class="tap-icon">👆</span>
+                        <span>ចុចដើម្បីមើលការបកប្រែ</span>
+                    </div>
+                </div>
+                <!-- Back -->
+                <div class="card-face card-back">
+                    <div class="card-label">ភាសាខ្មែរ</div>
+                    <div class="khmer-display" id="khmerText">ពង / ចូលខ្យល់</div>
+                    <img class="image-display" id="cardImage" src="" alt="" style="display:none;">
+                    <div class="tap-hint">
+                        <span class="tap-icon">👆</span>
+                        <span>ចុចដើម្បីត្រឡប់ក្រោយ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-buttons">
+            <button class="btn btn-prev" id="prevBtn" onclick="prevCard()">
+                ← មុន
+            </button>
+            <button class="btn btn-next" id="nextBtn" onclick="nextCard()">
+                បន្ទាប់ →
+            </button>
+        </div>
+
+        <!-- Actions -->
+        <div class="action-buttons">
+            <button class="btn-action" onclick="shuffleCards()">
+                🔀 ច្របល់
+            </button>
+            <button class="btn-action" onclick="resetProgress()">
+                ↻ ចាប់ផ្តើមឡើងវិញ
+            </button>
+        </div>
+
+    </div>
+
+    <div class="footer">© QC Flash Cards &nbsp;·&nbsp; Powered by AI</div>
+</div>
+
+<!-- ════════════════════════════════════════════ LOGIC ═══════════════════ -->
+<script>
+/* ── Database ─────────────────────────────────────────────────────────── */
+const database = [
+    { cn:"起泡",       km:"ពង / ចូលខ្យល់",          img:"qipao.jpg" },
+    { cn:"标纸不良",   km:"តែមមិនល្អ",               img:"biaozhibuliang.jpg" },
+    { cn:"修补痕",     km:"ស្នាមជួសជុល",             img:"xiubuhen.jpg" },
+    { cn:"杂质",       km:"ធូលី / កំទេចកំទី",        img:"zhazhi.jpg" },
+    { cn:"脏污",       km:"ប្រឡាក់",                  img:"zangwu.jpg" },
+    { cn:"标纸位置不对",km:"បិទតែមខុសទីតាំង",        img:"biaozhiweizhibudui.jpg" },
+    { cn:"标纸不对称", km:"បិទតែមមិនស្មើគ្នា",       img:"biaozhibuduiceng.jpg" },
+    { cn:"雾面",       km:"ស្រអាប់",                  img:"wumian.jpg" },
+    { cn:"橘皮",       km:"សំបកក្រូច",               img:"jupi.jpg" },
+    { cn:"针孔",       km:"រន្ធម្ជុល",               img:"zhengkong.jpg" },
+    { cn:"消光不良",   km:"ទឹកថ្នាំស្រអាប់មិនល្អ",  img:"xiaoguangbuliang.jpg" },
+    { cn:"防漆不良",   km:"ការពារទឹកថ្នាំមិនបានល្អ", img:"fangqibuliang.jpg" },
+    { cn:"工厂",       km:"រោងចក្រ",                 img:"gongchang.jpg" },
+    { cn:"车间",       km:"រោងជាង / អាគារ",          img:"chejian.jpg" },
+    { cn:"办公室",     km:"ការិយាល័យ",               img:"bangongshi.jpg" },
+    { cn:"班长",       km:"ប្រធានក្រុម",             img:"banzhang.jpg" },
+    { cn:"翻译",       km:"បកប្រែ",                  img:"fanyi.jpg" },
+    { cn:"注意安全",   km:"ប្រយ័ត្នសុវត្ថិភាព",     img:"zhuyianquan.jpg" },
+    { cn:"上班",       km:"ចូលធ្វើការ",              img:"shangban.jpg" },
+    { cn:"下班",       km:"ចេញពីធ្វើការ",            img:"xiaban.jpg" },
+    { cn:"请假",       km:"សុំច្បាប់",               img:"qingjia.jpg" },
+    { cn:"车架",       km:"តួកង់",                   img:"chejia.jpg" },
+    { cn:"前叉",       km:"ឆ្ពោះមុខ (Fork)",        img:"qiancha.jpg" },
+    { cn:"车把",       km:"ដៃកង់",                   img:"cheba.jpg" },
+    { cn:"车圈",       km:"ខ្នងកង់",                 img:"chequan.jpg" },
+    { cn:"外胎",       km:"សំបកកង់",                 img:"waitai.jpg" },
+    { cn:"脚踏",       km:"ឈ្នាន់",                  img:"jiaota.jpg" },
+    { cn:"链条",       km:"ច្រវាក់",                 img:"liantiao.jpg" },
+    { cn:"座垫",       km:"កែប",                      img:"zuodian.jpg" },
+    { cn:"刹车",       km:"ហ្វ្រាំង",               img:"shache.jpg" },
+    { cn:"测量值",     km:"តម្លៃវាស់ជាក់ស្តែង",    img:"celiangzhi.jpg" },
+    { cn:"标准值",     km:"តម្លៃស្តង់ដា",           img:"biaozhunzhi.jpg" },
+    { cn:"上限",       km:"ដែនកំណត់ លើ",            img:"shangxian.jpg" },
+    { cn:"下限",       km:"ដែនកំណត់ ក្រោម",         img:"xiaxian.jpg" },
+    { cn:"趋势图",     km:"ក្រាបនិន្នាការ",          img:"qushitu.jpg" },
+    { cn:"合格",       km:"ជាប់ (OK)",               img:"hege.jpg" },
+    { cn:"不合格",     km:"ធ្លាក់ (NG)",             img:"buhege.jpg" },
+    { cn:"开裂",       km:"ប្រេះ (Crack)",           img:"kailie.jpg" },
+    { cn:"焊破",       km:"ផ្សាធ្លុះ",              img:"hanpo.jpg" },
+    { cn:"漏焊",       km:"ភ្លេចផ្សារ",             img:"louhan.jpg" },
+    { cn:"针眼",       km:"ភ្នែកម្ជុល",             img:"zhenyan.jpg" },
+    { cn:"凹陷",       km:"កំពិត / ផត",             img:"aoxian.jpg" },
+    { cn:"焊道偏心",   km:"ផ្សារវៀច",               img:"handaobianxin.jpg" },
+    { cn:"电击伤",     km:"ឆេះម៉ាស",               img:"dianjishang.jpg" },
+    { cn:"堆焊",       km:"ផ្សារទូល (Overlap)",     img:"duihan.jpg" },
+    { cn:"咬边",       km:"ស៊ីសាច់បំពង់",           img:"yaobian.jpg" },
+    { cn:"间隙",       km:"ចន្លោះ / ហើប",           img:"jianxi.jpg" },
+    { cn:"碰刮伤",     km:"ប៉ះទង្គិច / កោស",       img:"pengguashang.jpg" },
+    { cn:"焊渣",       km:"កំទេចផ្សារ",             img:"hanzha.jpg" }
+];
+
+/* ── State ─────────────────────────────────────────────────────────────── */
+let cards = [...database];
+let currentIndex = 0;
+let isFlipped = false;
+let currentAudio = null;
+let ttsSpeed = 1.0;
+
+/* ── Initialize ────────────────────────────────────────────────────────── */
+function init() {
+    updateCard();
+    updateProgress();
+    updateNavButtons();
+    unlockAudio();
+}
+
+/* ── Update Card Display ───────────────────────────────────────────────── */
+function updateCard() {
+    const card = cards[currentIndex];
+    
+    document.getElementById('chineseText').innerText = card.cn;
+    document.getElementById('khmerText').innerText = card.km;
+    
+    const imgEl = document.getElementById('cardImage');
+    if (card.img) {
+        imgEl.src = card.img;
+        imgEl.style.display = 'block';
+    } else {
+        imgEl.style.display = 'none';
+    }
+    
+    // Reset flip state
+    if (isFlipped) {
+        document.getElementById('flashcard').classList.remove('flipped');
+        isFlipped = false;
+    }
+    
+    // Auto-play audio
+    setTimeout(() => playVoice(), 300);
+}
+
+/* ── Flip Card ─────────────────────────────────────────────────────────── */
+function flipCard() {
+    const flashcard = document.getElementById('flashcard');
+    flashcard.classList.toggle('flipped');
+    isFlipped = !isFlipped;
+}
+
+/* ── Navigation ────────────────────────────────────────────────────────── */
+function nextCard() {
+    if (currentIndex < cards.length - 1) {
+        currentIndex++;
+        updateCard();
+        updateProgress();
+        updateNavButtons();
+        
+        const flashcard = document.getElementById('flashcard');
+        flashcard.classList.remove('slide-in');
+        setTimeout(() => flashcard.classList.add('slide-in'), 10);
+    }
+}
+
+function prevCard() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        updateCard();
+        updateProgress();
+        updateNavButtons();
+        
+        const flashcard = document.getElementById('flashcard');
+        flashcard.classList.remove('slide-in');
+        setTimeout(() => flashcard.classList.add('slide-in'), 10);
+    }
+}
+
+function updateNavButtons() {
+    document.getElementById('prevBtn').disabled = currentIndex === 0;
+    document.getElementById('nextBtn').disabled = currentIndex === cards.length - 1;
+}
+
+/* ── Progress ──────────────────────────────────────────────────────────── */
+function updateProgress() {
+    const progress = ((currentIndex + 1) / cards.length) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+    document.getElementById('progressCount').innerText = (currentIndex + 1) + ' / ' + cards.length;
+}
+
+/* ── Actions ───────────────────────────────────────────────────────────── */
+function shuffleCards() {
+    cards = [...database].sort(() => 0.5 - Math.random());
+    currentIndex = 0;
+    updateCard();
+    updateProgress();
+    updateNavButtons();
+}
+
+function resetProgress() {
+    cards = [...database];
+    currentIndex = 0;
+    updateCard();
+    updateProgress();
+    updateNavButtons();
+}
+
+/* ── Audio Engine ────────────────────────────────────────────────────── */
+function setSpeed(val, btn) {
+    ttsSpeed = val;
+    document.querySelectorAll('.speed-toggle button')
+        .forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function setSpeaking(on) {
+    const btn = document.getElementById('speakBtn');
+    if (!btn) return;
+    if (on) btn.classList.add('speaking');
+    else btn.classList.remove('speaking');
+}
+
+function playVoice() {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+    }
+    window.speechSynthesis.cancel();
+    setSpeaking(false);
+
+    const text = cards[currentIndex].cn;
+    const speed = Math.max(0.35, Math.min(ttsSpeed, 1.0));
+
+    const gttsSpeed = (speed * 0.9).toFixed(2);
+    const url = `https://translate.google.com/translate_tts`
+              + `?ie=UTF-8&q=${encodeURIComponent(text)}&tl=zh-CN`
+              + `&client=gtx&ttsspeed=${gttsSpeed}`;
+
+    const audio = new Audio(url);
+    audio.playbackRate = 1.0;
+    currentAudio = audio;
+
+    setSpeaking(true);
+
+    audio.onended = () => { setSpeaking(false); currentAudio = null; };
+    audio.onerror = () => {
+        setSpeaking(false);
+        currentAudio = null;
+        useSpeechSynthesis(text, speed);
+    };
+
+    audio.play().catch(() => {
+        setSpeaking(false);
+        currentAudio = null;
+        useSpeechSynthesis(text, speed);
+    });
+}
+
+function useSpeechSynthesis(text, speed) {
+    window.speechSynthesis.cancel();
+    setSpeaking(true);
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN';
+    u.rate = Math.max(0.3, speed * 0.85);
+
+    const voices = window.speechSynthesis.getVoices();
+    const cnVoice = voices.find(v =>
+        v.lang === 'zh-CN' && /Google|Microsoft|Meijia|Ting-Ting/.test(v.name)
+    ) || voices.find(v => v.lang === 'zh-CN')
+      || voices.find(v => v.lang.startsWith('zh'));
+    if (cnVoice) u.voice = cnVoice;
+
+    u.onend = () => setSpeaking(false);
+    u.onerror = () => setSpeaking(false);
+    window.speechSynthesis.speak(u);
+}
+
+function unlockAudio() {
+    try {
+        const silence = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=");
+        silence.volume = 0;
+        silence.play().catch(() => {});
+    } catch(e) {}
+    try {
+        const u = new SpeechSynthesisUtterance(" ");
+        u.volume = 0;
+        window.speechSynthesis.speak(u);
+    } catch(e) {}
+    window.speechSynthesis.getVoices();
+}
+
+/* ── Keyboard Support ──────────────────────────────────────────────────── */
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') nextCard();
+    if (e.key === 'ArrowLeft') prevCard();
+    if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        flipCard();
+    }
+});
+
+/* ── Initialize App ─────────────────────────────────────────────────────── */
+init();
+</script>
+</body>
+</html>
