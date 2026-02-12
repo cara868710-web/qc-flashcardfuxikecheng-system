@@ -8,7 +8,7 @@
 
 **ប្រព័ន្ធរៀនពាក្យ QC ទំនើប ជាមួយ Flash Cards អន្តរកម្ម**
 
-[Demo](https://cara868710.github.io/qc-flashcardzin-system/) • [របាយការណ៍បញ្ហា](https://github.com/cara868710/qc-flashcardzin-system/issues) • [ទំនាក់ទំនង](mailto:your-email@example.com)
+[Demo](https://cara868710.github.io/qc-flashcardzin-system/index.html) • [របាយការណ៍បញ្ហា](https://github.com/cara868710/qc-flashcardzin-system/issues) • [ទំនាក់ទំនង](mailto:your-email@example.com)
 
 </div>
 
