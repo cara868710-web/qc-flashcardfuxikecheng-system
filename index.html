@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QC Flash Cards</title>
+    <title>QC Flash Cards - Professional Edition</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Orbitron:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        /* ═══════════════════════════════════════════════════════════════
+           ╔═╗ ╔═╗   ╔═╗ ╦   ╔═╗ ╔═╗ ╦ ╦   ╔═╗ ╔═╗ ╦═╗ ╔╦╗ ╔═╗
+           ║═╬╗║     ╠╣  ║   ╠═╣ ╚═╗ ╠═╣   ║   ╠═╣ ╠╦╝  ║║ ╚═╗
+           ╚═╝╚╚═╝   ╚   ╩═╝ ╩ ╩ ╚═╝ ╩ ╩   ╚═╝ ╩ ╩ ╩╚═ ═╩╝ ╚═╝
+           Professional Edition v2.0
+        ═══════════════════════════════════════════════════════════════ */
+
         /* ─── Design Tokens ─────────────────────────────────────────────── */
         :root {
             --bg:       #070b1a;
@@ -23,18 +30,23 @@
             --muted:    #7b89b8;
             --radius:   20px;
             --shadow:   0 24px 60px rgba(0,0,0,0.5);
+            --transition: cubic-bezier(0.4, 0.0, 0.2, 1);
         }
 
         /* ─── Reset & Base ──────────────────────────────────────────────── */
         *, *::before, *::after {
-            margin: 0; padding: 0;
+            margin: 0; 
+            padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
+        
         html, body {
             height: 100%;
             font-family: 'DM Sans', 'Battambang', sans-serif;
+            overflow-x: hidden;
         }
+        
         body {
             background: var(--bg);
             display: flex;
@@ -42,18 +54,25 @@
             align-items: flex-start;
             min-height: 100vh;
             padding: 20px 15px 40px;
-            overflow-x: hidden;
+            position: relative;
         }
 
         /* ─── Animated Background ───────────────────────────────────────── */
         body::before {
             content: '';
-            position: fixed; inset: 0;
+            position: fixed; 
+            inset: 0;
             background:
                 radial-gradient(ellipse 60% 40% at 20% 10%, rgba(79,142,247,0.12) 0%, transparent 60%),
                 radial-gradient(ellipse 50% 40% at 80% 80%, rgba(244,196,48,0.07) 0%, transparent 60%);
             pointer-events: none;
             z-index: 0;
+            animation: bgPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         /* ─── Container ─────────────────────────────────────────────────── */
@@ -72,6 +91,7 @@
             text-align: center;
             padding: 28px 20px 20px;
         }
+        
         .brand-badge {
             display: inline-flex;
             align-items: center;
@@ -86,7 +106,14 @@
             color: var(--primary);
             text-transform: uppercase;
             margin-bottom: 14px;
+            animation: badgePulse 3s ease-in-out infinite;
         }
+
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(79,142,247,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(79,142,247,0); }
+        }
+        
         .brand-title {
             font-family: 'Orbitron', sans-serif;
             font-size: 26px;
@@ -95,9 +122,11 @@
             letter-spacing: 1px;
             line-height: 1.2;
         }
+        
         .brand-title span {
             color: var(--accent);
         }
+        
         .brand-sub {
             font-family: 'Battambang', sans-serif;
             font-size: 14px;
@@ -114,176 +143,88 @@
             box-shadow: var(--shadow);
         }
 
-        /* ─── Flash Card Screen ─────────────────────────────────────────── */
+        /* ─── Progress ──────────────────────────────────────────────────── */
         .progress-wrap {
             margin-bottom: 20px;
         }
+        
         .progress-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
         }
+        
         .progress-label {
             font-family: 'Battambang', sans-serif;
             font-size: 12px;
             color: var(--muted);
         }
+        
         .progress-count {
             font-family: 'Orbitron', sans-serif;
             font-size: 12px;
             color: var(--primary);
             font-weight: 700;
         }
+        
         .progress-track {
             width: 100%;
             height: 6px;
             background: var(--surface);
             border-radius: 100px;
             overflow: hidden;
+            position: relative;
         }
+
+        .progress-track::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255,255,255,0.1), 
+                transparent
+            );
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
         .progress-fill {
             height: 100%;
             width: 0%;
             border-radius: 100px;
             background: linear-gradient(90deg, var(--primary), var(--accent));
-            transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
-        }
-
-        /* ─── Flash Card Container ──────────────────────────────────────── */
-        .flashcard-container {
-            perspective: 1000px;
-            margin-bottom: 24px;
-            min-height: 420px;
-        }
-
-        .flashcard {
+            transition: width 0.5s var(--transition);
             position: relative;
-            width: 100%;
-            height: 420px;
-            transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+            overflow: hidden;
         }
 
-        .flashcard.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card-face {
+        .progress-fill::after {
+            content: '';
             position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            background: var(--surface);
-            border: 2px solid var(--border);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255,255,255,0.3), 
+                transparent
+            );
+            animation: progressShine 1.5s infinite;
         }
 
-        .card-front {
-            z-index: 2;
-        }
-
-        .card-back {
-            transform: rotateY(180deg);
-            background: linear-gradient(135deg, var(--surface) 0%, #0a0e1c 100%);
-        }
-
-        /* ─── Card Content ──────────────────────────────────────────────── */
-        .card-label {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            background: rgba(79,142,247,0.15);
-            border: 1px solid rgba(79,142,247,0.3);
-            border-radius: 100px;
-            padding: 4px 12px;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            color: var(--primary);
-            text-transform: uppercase;
-        }
-
-        .card-back .card-label {
-            background: rgba(244,196,48,0.15);
-            border-color: rgba(244,196,48,0.3);
-            color: var(--accent);
-        }
-
-        .chinese-display {
-            font-size: 72px;
-            font-weight: 900;
-            color: var(--text);
-            margin-bottom: 20px;
-            line-height: 1;
-            text-shadow: 0 4px 12px rgba(79,142,247,0.3);
-        }
-
-        .khmer-display {
-            font-family: 'Battambang', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 20px;
-            text-align: center;
-            line-height: 1.4;
-        }
-
-        .image-display {
-            width: 100%;
-            max-height: 200px;
-            object-fit: contain;
-            border-radius: 12px;
-            margin-top: 16px;
-            border: 1px solid var(--border);
-        }
-
-        /* ─── Flip Button (NEW) ─────────────────────────────────────────── */
-        .flip-btn {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 28px;
-            background: linear-gradient(135deg, var(--primary) 0%, #6fa8ff 100%);
-            border: none;
-            border-radius: 100px;
-            font-family: 'Battambang', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            color: #fff;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(79,142,247,0.4);
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 10;
-        }
-
-        .flip-btn:hover {
-            box-shadow: 0 8px 24px rgba(79,142,247,0.5);
-            transform: translateX(-50%) scale(1.05);
-        }
-
-        .flip-btn:active {
-            transform: translateX(-50%) scale(0.95);
-        }
-
-        .flip-icon {
-            font-size: 18px;
-            animation: flip-hint 2s infinite;
-        }
-
-        @keyframes flip-hint {
-            0%, 100% { transform: rotateY(0deg); }
-            50% { transform: rotateY(180deg); }
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         /* ─── Audio Controls ────────────────────────────────────────────── */
@@ -306,7 +247,22 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            transition: all 0.2s;
+            transition: all 0.2s var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .speak-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(79,142,247,0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .speak-btn:hover::before {
+            opacity: 1;
         }
 
         .speak-btn:active {
@@ -318,10 +274,26 @@
             background: rgba(79,142,247,0.2);
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(79,142,247,0.18);
+            animation: speakPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes speakPulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(79,142,247,0.18); }
+            50% { box-shadow: 0 0 0 6px rgba(79,142,247,0.08); }
+        }
+
+        .speak-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .sp-icon {
             font-size: 28px;
+            transition: transform 0.2s;
+        }
+
+        .speak-btn:hover .sp-icon {
+            transform: scale(1.1);
         }
 
         .wave-bars {
@@ -337,6 +309,7 @@
             border-radius: 3px;
             background: var(--primary);
             height: 4px;
+            transition: height 0.1s;
         }
 
         .speak-btn.speaking .wave-bars span:nth-child(1) { animation: bar 0.7s 0.0s ease-in-out infinite; }
@@ -350,11 +323,13 @@
             50% { height: 12px; }
         }
 
+        /* ─── Speed Control ─────────────────────────────────────────────── */
         .speed-row {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            margin-bottom: 20px;
         }
 
         .speed-lbl {
@@ -380,12 +355,168 @@
             font-size: 10px;
             font-weight: 700;
             color: var(--muted);
-            transition: all 0.15s;
+            transition: all 0.2s var(--transition);
+        }
+
+        .speed-toggle button:hover {
+            background: rgba(79,142,247,0.1);
         }
 
         .speed-toggle button.active {
             background: var(--primary);
             color: #fff;
+        }
+
+        /* ─── Flash Card Container ──────────────────────────────────────── */
+        .flashcard-container {
+            perspective: 1000px;
+            margin-bottom: 24px;
+            min-height: 420px;
+            position: relative;
+        }
+
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 420px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s var(--transition);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .card-face::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(79,142,247,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .card-front {
+            z-index: 2;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, var(--surface) 0%, #0a0e1c 100%);
+        }
+
+        /* ─── Card Content ──────────────────────────────────────────────── */
+        .card-label {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: rgba(79,142,247,0.15);
+            border: 1px solid rgba(79,142,247,0.3);
+            border-radius: 100px;
+            padding: 4px 12px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--primary);
+            text-transform: uppercase;
+            z-index: 10;
+        }
+
+        .card-back .card-label {
+            background: rgba(244,196,48,0.15);
+            border-color: rgba(244,196,48,0.3);
+            color: var(--accent);
+        }
+
+        .chinese-display {
+            font-size: 72px;
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 20px;
+            line-height: 1;
+            text-shadow: 0 4px 12px rgba(79,142,247,0.3);
+            animation: fadeInUp 0.6s var(--transition);
+            user-select: none;
+        }
+
+        .khmer-display {
+            font-family: 'Battambang', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.4;
+            animation: fadeInUp 0.6s 0.1s var(--transition) both;
+            user-select: none;
+        }
+
+        .image-display {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-top: 16px;
+            border: 1px solid var(--border);
+            animation: fadeInUp 0.6s 0.2s var(--transition) both;
+        }
+
+        /* ─── Flip Button ───────────────────────────────────────────────── */
+        .flip-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--primary) 0%, #6fa8ff 100%);
+            border: none;
+            border-radius: 100px;
+            font-family: 'Battambang', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(79,142,247,0.4);
+            transition: all 0.2s var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .flip-btn:hover {
+            box-shadow: 0 8px 24px rgba(79,142,247,0.5);
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        .flip-btn:active {
+            transform: translateX(-50%) scale(0.95);
+        }
+
+        .flip-icon {
+            font-size: 18px;
+            animation: flipHint 3s infinite;
+        }
+
+        @keyframes flipHint {
+            0%, 100% { transform: rotateY(0deg); }
+            50% { transform: rotateY(180deg); }
         }
 
         /* ─── Navigation Buttons ────────────────────────────────────────── */
@@ -404,11 +535,26 @@
             font-family: 'Battambang', sans-serif;
             font-size: 15px;
             font-weight: 700;
-            transition: all 0.2s;
+            transition: all 0.2s var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .btn:hover::before {
+            transform: translateX(100%);
         }
 
         .btn-prev {
@@ -419,6 +565,7 @@
         .btn-prev:hover:not(:disabled) {
             border-color: var(--primary);
             background: rgba(79,142,247,0.08);
+            transform: translateX(-2px);
         }
 
         .btn-next {
@@ -430,6 +577,7 @@
 
         .btn-next:hover:not(:disabled) {
             box-shadow: 0 8px 24px rgba(79,142,247,0.4);
+            transform: translateX(2px);
         }
 
         .btn:active:not(:disabled) {
@@ -458,20 +606,59 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-action::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(79,142,247,0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-action:hover::before {
+            opacity: 1;
         }
 
         .btn-action:hover {
             border-color: var(--primary);
             background: rgba(79,142,247,0.08);
+            transform: translateY(-2px);
         }
 
         .btn-action:active {
             transform: scale(0.96);
+        }
+
+        /* ─── Keyboard Hint ─────────────────────────────────────────────── */
+        .keyboard-hint {
+            text-align: center;
+            padding: 16px 0 0;
+            font-size: 11px;
+            color: var(--muted);
+            opacity: 0.6;
+            font-family: 'Battambang', sans-serif;
+        }
+
+        .keyboard-hint kbd {
+            display: inline-block;
+            padding: 3px 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Orbitron', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 2px;
         }
 
         /* ─── Footer ────────────────────────────────────────────────────── */
@@ -483,37 +670,232 @@
             letter-spacing: 0.5px;
         }
 
+        /* ─── Loading State ─────────────────────────────────────────────── */
+        .loading {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* ─── Toast Notification ────────────────────────────────────────── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-family: 'Battambang', sans-serif;
+            font-size: 14px;
+            color: var(--text);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s var(--transition);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-color: var(--success);
+            background: rgba(34,212,114,0.1);
+            color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+            background: rgba(255,77,109,0.1);
+            color: var(--danger);
+        }
+
         /* ─── Animations ────────────────────────────────────────────────── */
         .fade-in {
-            animation: fadeIn 0.35s ease both;
+            animation: fadeIn 0.4s var(--transition) both;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.4s var(--transition) both;
+        }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
         }
 
         .slide-in {
-            animation: slideIn 0.4s cubic-bezier(0.4, 0.0, 0.2, 1) both;
+            animation: slideIn 0.5s var(--transition) both;
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
+            from { 
+                opacity: 0; 
+                transform: translateX(40px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        /* ─── Touch Gesture Indicator ───────────────────────────────────── */
+        .swipe-hint {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: var(--muted);
+            opacity: 0;
+            animation: swipeHint 4s ease-in-out infinite;
+            pointer-events: none;
+            font-family: 'Battambang', sans-serif;
+        }
+
+        @keyframes swipeHint {
+            0%, 90%, 100% { opacity: 0; }
+            10%, 80% { opacity: 0.5; }
+        }
+
+        /* ─── Responsive Design ─────────────────────────────────────────── */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px 10px 30px;
+            }
+
+            .brand-title {
+                font-size: 22px;
+            }
+
+            .brand-sub {
+                font-size: 12px;
+            }
+
+            .card {
+                padding: 24px 20px;
+            }
+
+            .flashcard-container {
+                min-height: 380px;
+            }
+
+            .flashcard {
+                height: 380px;
+            }
+
+            .chinese-display {
+                font-size: 60px;
+            }
+
+            .khmer-display {
+                font-size: 24px;
+            }
+
+            .image-display {
+                max-height: 160px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .chinese-display {
+                font-size: 52px;
+            }
+
+            .khmer-display {
+                font-size: 20px;
+            }
+
+            .flashcard-container {
+                min-height: 350px;
+            }
+
+            .flashcard {
+                height: 350px;
+            }
+        }
+
+        /* ─── Print Styles ──────────────────────────────────────────────── */
+        @media print {
+            body::before {
+                display: none;
+            }
+
+            .audio-controls,
+            .speed-row,
+            .nav-buttons,
+            .action-buttons,
+            .keyboard-hint,
+            .footer,
+            .flip-btn {
+                display: none !important;
+            }
+
+            .card {
+                box-shadow: none;
+                border: 2px solid #000;
+            }
+        }
+
+        /* ─── Dark Mode Optimization ────────────────────────────────────── */
+        @media (prefers-color-scheme: dark) {
+            /* Already optimized for dark mode */
+        }
+
+        /* ─── Accessibility ─────────────────────────────────────────────── */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ─── Focus Visible (Accessibility) ─────────────────────────────── */
+        button:focus-visible,
+        .btn:focus-visible,
+        .btn-action:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
         }
     </style>
 </head>
 <body>
 <div class="wrap">
 
-    <!-- ── Brand Header ─────────────────────────────────────────────── -->
+    <!-- ══════════════════════════════════════════════════════════════════
+         BRAND HEADER
+    ══════════════════════════════════════════════════════════════════ -->
     <div class="brand-header">
         <div class="brand-badge">📚 FLASH CARDS</div>
         <div class="brand-title">QC<span>LEARN</span></div>
         <div class="brand-sub">រៀនពាក្យ QC ជាមួយ Flash Cards</div>
     </div>
 
-    <!-- ── Main Card ────────────────────────────────────────────────── -->
+    <!-- ══════════════════════════════════════════════════════════════════
+         MAIN CARD
+    ══════════════════════════════════════════════════════════════════ -->
     <div class="card fade-in">
         
         <!-- Progress -->
@@ -529,7 +911,7 @@
 
         <!-- Audio Controls -->
         <div class="audio-controls">
-            <button class="speak-btn" id="speakBtn" onclick="playVoice()">
+            <button class="speak-btn" id="speakBtn" onclick="playVoice()" aria-label="Play pronunciation">
                 <span class="sp-icon">🔊</span>
                 <div class="wave-bars">
                     <span></span><span></span><span></span><span></span><span></span>
@@ -537,319 +919,682 @@
             </button>
         </div>
 
+        <!-- Speed Control -->
         <div class="speed-row">
             <span class="speed-lbl">ល្បឿន:</span>
-            <div class="speed-toggle">
-                <button class="active" onclick="setSpeed(1.0, this)">1×</button>
-                <button onclick="setSpeed(0.65, this)">0.6×</button>
-                <button onclick="setSpeed(0.45, this)">0.4×</button>
+            <div class="speed-toggle" role="group" aria-label="Speed control">
+                <button class="active" onclick="setSpeed(1.0, this)" aria-label="Normal speed">1×</button>
+                <button onclick="setSpeed(0.65, this)" aria-label="Slow speed">0.6×</button>
+                <button onclick="setSpeed(0.45, this)" aria-label="Very slow speed">0.4×</button>
             </div>
         </div>
 
         <!-- Flash Card -->
         <div class="flashcard-container">
             <div class="flashcard" id="flashcard">
-                <!-- Front -->
+                
+                <!-- Front Side -->
                 <div class="card-face card-front">
                     <div class="card-label">中文</div>
                     <div class="chinese-display" id="chineseText">起泡</div>
-                    <button class="flip-btn" onclick="flipCard()">
+                    <button class="flip-btn" onclick="flipCard()" aria-label="Flip to see translation">
                         <span class="flip-icon">🔄</span>
                         <span>មើលការបកប្រែ</span>
                     </button>
                 </div>
-                <!-- Back -->
+                
+                <!-- Back Side -->
                 <div class="card-face card-back">
                     <div class="card-label">ភាសាខ្មែរ</div>
                     <div class="khmer-display" id="khmerText">ពង / ចូលខ្យល់</div>
                     <img class="image-display" id="cardImage" src="" alt="" style="display:none;">
-                    <button class="flip-btn" onclick="flipCard()">
+                    <button class="flip-btn" onclick="flipCard()" aria-label="Flip back to Chinese">
                         <span class="flip-icon">🔄</span>
                         <span>ត្រឡប់ក្រោយ</span>
                     </button>
                 </div>
             </div>
+            
+            <!-- Swipe Hint -->
+            <div class="swipe-hint">👆 អូសឆ្វេង/ស្តាំ ដើម្បីប្តូរកាត</div>
         </div>
 
-        <!-- Navigation -->
+        <!-- Navigation Buttons -->
         <div class="nav-buttons">
-            <button class="btn btn-prev" id="prevBtn" onclick="prevCard()">
+            <button class="btn btn-prev" id="prevBtn" onclick="prevCard()" aria-label="Previous card">
                 ← មុន
             </button>
-            <button class="btn btn-next" id="nextBtn" onclick="nextCard()">
+            <button class="btn btn-next" id="nextBtn" onclick="nextCard()" aria-label="Next card">
                 បន្ទាប់ →
             </button>
         </div>
 
-        <!-- Actions -->
+        <!-- Action Buttons -->
         <div class="action-buttons">
-            <button class="btn-action" onclick="shuffleCards()">
+            <button class="btn-action" onclick="shuffleCards()" aria-label="Shuffle cards">
                 🔀 ច្របល់
             </button>
-            <button class="btn-action" onclick="resetProgress()">
+            <button class="btn-action" onclick="resetProgress()" aria-label="Reset progress">
                 ↻ ចាប់ផ្តើមឡើងវិញ
             </button>
         </div>
 
+        <!-- Keyboard Hint -->
+        <div class="keyboard-hint">
+            <kbd>←</kbd> <kbd>→</kbd> រុករក &nbsp;|&nbsp; <kbd>Space</kbd> ត្រឡប់
+        </div>
+
     </div>
 
-    <div class="footer">© QC Flash Cards &nbsp;·&nbsp; Powered by AI</div>
+    <!-- Footer -->
+    <div class="footer">© 2024 QC Flash Cards &nbsp;·&nbsp; Professional Edition v2.0</div>
 </div>
 
-<!-- ════════════════════════════════════════════ LOGIC ═══════════════════ -->
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     ╔╦╗ ╔═╗ ╦ ╔╗╔   ╦  ╔═╗ ╔═╗ ╦ ╔═╗
+     ║║║ ╠═╣ ║ ║║║   ║  ║ ║ ║ ╦ ║ ║  
+     ╩ ╩ ╩ ╩ ╩ ╝╚╝   ╩═╝ ╚═╝ ╚═╝ ╩ ╚═╝
+     Professional Edition - Optimized & Enhanced
+══════════════════════════════════════════════════════════════════════════ -->
 <script>
-/* ── Database ─────────────────────────────────────────────────────────── */
-const database = [
-    { cn:"起泡",       km:"ពង / ចូលខ្យល់",          img:"qipao.jpg" },
-    { cn:"标纸不良",   km:"តែមមិនល្អ",               img:"biaozhibuliang.jpg" },
-    { cn:"修补痕",     km:"ស្នាមជួសជុល",             img:"xiubuhen.jpg" },
-    { cn:"杂质",       km:"ធូលី / កំទេចកំទី",        img:"zhazhi.jpg" },
-    { cn:"脏污",       km:"ប្រឡាក់",                  img:"zangwu.jpg" },
-    { cn:"标纸位置不对",km:"បិទតែមខុសទីតាំង",        img:"biaozhiweizhibudui.jpg" },
-    { cn:"标纸不对称", km:"បិទតែមមិនស្មើគ្នា",       img:"biaozhibuduiceng.jpg" },
-    { cn:"雾面",       km:"ស្រអាប់",                  img:"wumian.jpg" },
-    { cn:"橘皮",       km:"សំបកក្រូច",               img:"jupi.jpg" },
-    { cn:"针孔",       km:"រន្ធម្ជុល",               img:"zhengkong.jpg" },
-    { cn:"消光不良",   km:"ទឹកថ្នាំស្រអាប់មិនល្អ",  img:"xiaoguangbuliang.jpg" },
-    { cn:"防漆不良",   km:"ការពារទឹកថ្នាំមិនបានល្អ", img:"fangqibuliang.jpg" },
-    { cn:"工厂",       km:"រោងចក្រ",                 img:"gongchang.jpg" },
-    { cn:"车间",       km:"រោងជាង / អាគារ",          img:"chejian.jpg" },
-    { cn:"办公室",     km:"ការិយាល័យ",               img:"bangongshi.jpg" },
-    { cn:"班长",       km:"ប្រធានក្រុម",             img:"banzhang.jpg" },
-    { cn:"翻译",       km:"បកប្រែ",                  img:"fanyi.jpg" },
-    { cn:"注意安全",   km:"ប្រយ័ត្នសុវត្ថិភាព",     img:"zhuyianquan.jpg" },
-    { cn:"上班",       km:"ចូលធ្វើការ",              img:"shangban.jpg" },
-    { cn:"下班",       km:"ចេញពីធ្វើការ",            img:"xiaban.jpg" },
-    { cn:"请假",       km:"សុំច្បាប់",               img:"qingjia.jpg" },
-    { cn:"车架",       km:"តួកង់",                   img:"chejia.jpg" },
-    { cn:"前叉",       km:"ឆ្ពោះមុខ (Fork)",        img:"qiancha.jpg" },
-    { cn:"车把",       km:"ដៃកង់",                   img:"cheba.jpg" },
-    { cn:"车圈",       km:"ខ្នងកង់",                 img:"chequan.jpg" },
-    { cn:"外胎",       km:"សំបកកង់",                 img:"waitai.jpg" },
-    { cn:"脚踏",       km:"ឈ្នាន់",                  img:"jiaota.jpg" },
-    { cn:"链条",       km:"ច្រវាក់",                 img:"liantiao.jpg" },
-    { cn:"座垫",       km:"កែប",                      img:"zuodian.jpg" },
-    { cn:"刹车",       km:"ហ្វ្រាំង",               img:"shache.jpg" },
-    { cn:"测量值",     km:"តម្លៃវាស់ជាក់ស្តែង",    img:"celiangzhi.jpg" },
-    { cn:"标准值",     km:"តម្លៃស្តង់ដា",           img:"biaozhunzhi.jpg" },
-    { cn:"上限",       km:"ដែនកំណត់ លើ",            img:"shangxian.jpg" },
-    { cn:"下限",       km:"ដែនកំណត់ ក្រោម",         img:"xiaxian.jpg" },
-    { cn:"趋势图",     km:"ក្រាបនិន្នាការ",          img:"qushitu.jpg" },
-    { cn:"合格",       km:"ជាប់ (OK)",               img:"hege.jpg" },
-    { cn:"不合格",     km:"ធ្លាក់ (NG)",             img:"buhege.jpg" },
-    { cn:"开裂",       km:"ប្រេះ (Crack)",           img:"kailie.jpg" },
-    { cn:"焊破",       km:"ផ្សាធ្លុះ",              img:"hanpo.jpg" },
-    { cn:"漏焊",       km:"ភ្លេចផ្សារ",             img:"louhan.jpg" },
-    { cn:"针眼",       km:"ភ្នែកម្ជុល",             img:"zhenyan.jpg" },
-    { cn:"凹陷",       km:"កំពិត / ផត",             img:"aoxian.jpg" },
-    { cn:"焊道偏心",   km:"ផ្សារវៀច",               img:"handaobianxin.jpg" },
-    { cn:"电击伤",     km:"ឆេះម៉ាស",               img:"dianjishang.jpg" },
-    { cn:"堆焊",       km:"ផ្សារទូល (Overlap)",     img:"duihan.jpg" },
-    { cn:"咬边",       km:"ស៊ីសាច់បំពង់",           img:"yaobian.jpg" },
-    { cn:"间隙",       km:"ចន្លោះ / ហើប",           img:"jianxi.jpg" },
-    { cn:"碰刮伤",     km:"ប៉ះទង្គិច / កោស",       img:"pengguashang.jpg" },
-    { cn:"焊渣",       km:"កំទេចផ្សារ",             img:"hanzha.jpg" }
+'use strict';
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DATABASE
+══════════════════════════════════════════════════════════════════════════ */
+const DATABASE = [
+    { cn: "起泡",         km: "ពង / ចូលខ្យល់",              img: "qipao.jpg" },
+    { cn: "标纸不良",     km: "តែមមិនល្អ",                   img: "biaozhibuliang.jpg" },
+    { cn: "修补痕",       km: "ស្នាមជួសជុល",                 img: "xiubuhen.jpg" },
+    { cn: "杂质",         km: "ធូលី / កំទេចកំទី",            img: "zhazhi.jpg" },
+    { cn: "脏污",         km: "ប្រឡាក់",                      img: "zangwu.jpg" },
+    { cn: "标纸位置不对", km: "បិទតែមខុសទីតាំង",            img: "biaozhiweizhibudui.jpg" },
+    { cn: "标纸不对称",   km: "បិទតែមមិនស្មើគ្នា",           img: "biaozhibuduiceng.jpg" },
+    { cn: "雾面",         km: "ស្រអាប់",                      img: "wumian.jpg" },
+    { cn: "橘皮",         km: "សំបកក្រូច",                   img: "jupi.jpg" },
+    { cn: "针孔",         km: "រន្ធម្ជុល",                   img: "zhengkong.jpg" },
+    { cn: "消光不良",     km: "ទឹកថ្នាំស្រអាប់មិនល្អ",      img: "xiaoguangbuliang.jpg" },
+    { cn: "防漆不良",     km: "ការពារទឹកថ្នាំមិនបានល្អ",     img: "fangqibuliang.jpg" },
+    { cn: "工厂",         km: "រោងចក្រ",                     img: "gongchang.jpg" },
+    { cn: "车间",         km: "រោងជាង / អាគារ",              img: "chejian.jpg" },
+    { cn: "办公室",       km: "ការិយាល័យ",                   img: "bangongshi.jpg" },
+    { cn: "班长",         km: "ប្រធានក្រុម",                 img: "banzhang.jpg" },
+    { cn: "翻译",         km: "បកប្រែ",                      img: "fanyi.jpg" },
+    { cn: "注意安全",     km: "ប្រយ័ត្នសុវត្ថិភាព",         img: "zhuyianquan.jpg" },
+    { cn: "上班",         km: "ចូលធ្វើការ",                  img: "shangban.jpg" },
+    { cn: "下班",         km: "ចេញពីធ្វើការ",                img: "xiaban.jpg" },
+    { cn: "请假",         km: "សុំច្បាប់",                   img: "qingjia.jpg" },
+    { cn: "车架",         km: "តួកង់",                       img: "chejia.jpg" },
+    { cn: "前叉",         km: "ឆ្ពោះមុខ (Fork)",            img: "qiancha.jpg" },
+    { cn: "车把",         km: "ដៃកង់",                       img: "cheba.jpg" },
+    { cn: "车圈",         km: "ខ្នងកង់",                     img: "chequan.jpg" },
+    { cn: "外胎",         km: "សំបកកង់",                     img: "waitai.jpg" },
+    { cn: "脚踏",         km: "ឈ្នាន់",                      img: "jiaota.jpg" },
+    { cn: "链条",         km: "ច្រវាក់",                     img: "liantiao.jpg" },
+    { cn: "座垫",         km: "កែប",                          img: "zuodian.jpg" },
+    { cn: "刹车",         km: "ហ្វ្រាំង",                   img: "shache.jpg" },
+    { cn: "测量值",       km: "តម្លៃវាស់ជាក់ស្តែង",        img: "celiangzhi.jpg" },
+    { cn: "标准值",       km: "តម្លៃស្តង់ដា",               img: "biaozhunzhi.jpg" },
+    { cn: "上限",         km: "ដែនកំណត់ លើ",                img: "shangxian.jpg" },
+    { cn: "下限",         km: "ដែនកំណត់ ក្រោម",             img: "xiaxian.jpg" },
+    { cn: "趋势图",       km: "ក្រាបនិន្នាការ",              img: "qushitu.jpg" },
+    { cn: "合格",         km: "ជាប់ (OK)",                   img: "hege.jpg" },
+    { cn: "不合格",       km: "ធ្លាក់ (NG)",                 img: "buhege.jpg" },
+    { cn: "开裂",         km: "ប្រេះ (Crack)",               img: "kailie.jpg" },
+    { cn: "焊破",         km: "ផ្សាធ្លុះ",                  img: "hanpo.jpg" },
+    { cn: "漏焊",         km: "ភ្លេចផ្សារ",                 img: "louhan.jpg" },
+    { cn: "针眼",         km: "ភ្នែកម្ជុល",                 img: "zhenyan.jpg" },
+    { cn: "凹陷",         km: "កំពិត / ផត",                 img: "aoxian.jpg" },
+    { cn: "焊道偏心",     km: "ផ្សារវៀច",                   img: "handaobianxin.jpg" },
+    { cn: "电击伤",       km: "ឆេះម៉ាស",                   img: "dianjishang.jpg" },
+    { cn: "堆焊",         km: "ផ្សារទូល (Overlap)",         img: "duihan.jpg" },
+    { cn: "咬边",         km: "ស៊ីសាច់បំពង់",               img: "yaobian.jpg" },
+    { cn: "间隙",         km: "ចន្លោះ / ហើប",               img: "jianxi.jpg" },
+    { cn: "碰刮伤",       km: "ប៉ះទង្គិច / កោស",           img: "pengguashang.jpg" },
+    { cn: "焊渣",         km: "កំទេចផ្សារ",                 img: "hanzha.jpg" }
 ];
 
-/* ── State ─────────────────────────────────────────────────────────────── */
-let cards = [...database];
-let currentIndex = 0;
-let isFlipped = false;
-let currentAudio = null;
-let ttsSpeed = 1.0;
+/* ══════════════════════════════════════════════════════════════════════════
+   STATE MANAGEMENT
+══════════════════════════════════════════════════════════════════════════ */
+const STATE = {
+    cards: [...DATABASE],
+    currentIndex: 0,
+    isFlipped: false,
+    currentAudio: null,
+    ttsSpeed: 1.0,
+    isPlaying: false,
+    touchStartX: 0,
+    touchEndX: 0,
+};
 
-/* ── Initialize ────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   DOM ELEMENTS
+══════════════════════════════════════════════════════════════════════════ */
+const DOM = {
+    flashcard: null,
+    chineseText: null,
+    khmerText: null,
+    cardImage: null,
+    progressFill: null,
+    progressCount: null,
+    prevBtn: null,
+    nextBtn: null,
+    speakBtn: null,
+    toast: null,
+};
+
+/* ══════════════════════════════════════════════════════════════════════════
+   INITIALIZATION
+══════════════════════════════════════════════════════════════════════════ */
 function init() {
+    // Cache DOM elements
+    DOM.flashcard = document.getElementById('flashcard');
+    DOM.chineseText = document.getElementById('chineseText');
+    DOM.khmerText = document.getElementById('khmerText');
+    DOM.cardImage = document.getElementById('cardImage');
+    DOM.progressFill = document.getElementById('progressFill');
+    DOM.progressCount = document.getElementById('progressCount');
+    DOM.prevBtn = document.getElementById('prevBtn');
+    DOM.nextBtn = document.getElementById('nextBtn');
+    DOM.speakBtn = document.getElementById('speakBtn');
+    DOM.toast = document.getElementById('toast');
+
+    // Initial render
     updateCard();
     updateProgress();
     updateNavButtons();
+    
+    // Unlock audio for iOS
     unlockAudio();
+    
+    // Setup event listeners
+    setupEventListeners();
+    
+    // Load voices for Speech Synthesis
+    if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+        };
+    }
+
+    console.log('✅ QC Flash Cards initialized successfully');
 }
 
-/* ── Update Card Display ───────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   EVENT LISTENERS
+══════════════════════════════════════════════════════════════════════════ */
+function setupEventListeners() {
+    // Keyboard navigation
+    document.addEventListener('keydown', handleKeyboard);
+    
+    // Touch gestures for mobile
+    if (DOM.flashcard) {
+        DOM.flashcard.addEventListener('touchstart', handleTouchStart, { passive: true });
+        DOM.flashcard.addEventListener('touchend', handleTouchEnd, { passive: true });
+    }
+    
+    // Prevent context menu on long press (mobile)
+    document.addEventListener('contextmenu', (e) => {
+        if (e.target.closest('.flashcard')) {
+            e.preventDefault();
+        }
+    });
+}
+
+function handleKeyboard(e) {
+    switch(e.key) {
+        case 'ArrowRight':
+            e.preventDefault();
+            nextCard();
+            break;
+        case 'ArrowLeft':
+            e.preventDefault();
+            prevCard();
+            break;
+        case ' ':
+        case 'Enter':
+            e.preventDefault();
+            flipCard();
+            break;
+        case 'p':
+        case 'P':
+            e.preventDefault();
+            playVoice();
+            break;
+    }
+}
+
+function handleTouchStart(e) {
+    STATE.touchStartX = e.changedTouches[0].screenX;
+}
+
+function handleTouchEnd(e) {
+    STATE.touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}
+
+function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = STATE.touchStartX - STATE.touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            // Swipe left - next card
+            nextCard();
+        } else {
+            // Swipe right - previous card
+            prevCard();
+        }
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CARD DISPLAY
+══════════════════════════════════════════════════════════════════════════ */
 function updateCard() {
-    const card = cards[currentIndex];
+    const card = STATE.cards[STATE.currentIndex];
     
-    document.getElementById('chineseText').innerText = card.cn;
-    document.getElementById('khmerText').innerText = card.km;
-    
-    const imgEl = document.getElementById('cardImage');
-    if (card.img) {
-        imgEl.src = card.img;
-        imgEl.style.display = 'block';
-    } else {
-        imgEl.style.display = 'none';
+    if (!card) {
+        console.error('❌ Card not found at index:', STATE.currentIndex);
+        return;
     }
     
-    // Reset flip state (ជានិច្ច)
-document.getElementById('flashcard').classList.remove('flipped');
-isFlipped = false;
+    // Update text content
+    if (DOM.chineseText) DOM.chineseText.textContent = card.cn;
+    if (DOM.khmerText) DOM.khmerText.textContent = card.km;
+    
+    // Update image
+    if (DOM.cardImage) {
+        if (card.img) {
+            DOM.cardImage.src = card.img;
+            DOM.cardImage.style.display = 'block';
+            DOM.cardImage.onerror = () => {
+                DOM.cardImage.style.display = 'none';
+                console.warn('⚠️ Image not found:', card.img);
+            };
+        } else {
+            DOM.cardImage.style.display = 'none';
+        }
     }
     
-    // Auto-play audio
-    setTimeout(() => playVoice(), 300);
+    // CRITICAL FIX: Always reset flip state
+    if (DOM.flashcard) {
+        DOM.flashcard.classList.remove('flipped');
+    }
+    STATE.isFlipped = false;
+    
+    // Auto-play audio with delay
+    setTimeout(() => {
+        if (!STATE.isPlaying) {
+            playVoice();
+        }
+    }, 400);
 }
 
-/* ── Flip Card ─────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   FLIP CARD
+══════════════════════════════════════════════════════════════════════════ */
 function flipCard() {
-    const flashcard = document.getElementById('flashcard');
-    flashcard.classList.toggle('flipped');
-    isFlipped = !isFlipped;
+    if (!DOM.flashcard) return;
+    
+    DOM.flashcard.classList.toggle('flipped');
+    STATE.isFlipped = !STATE.isFlipped;
+    
+    // Optional: Play sound effect
+    // playFlipSound();
 }
 
-/* ── Navigation ────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════════════════════════ */
 function nextCard() {
-    if (currentIndex < cards.length - 1) {
-        currentIndex++;
-        updateCard();
-        updateProgress();
-        updateNavButtons();
-        
-        const flashcard = document.getElementById('flashcard');
-        flashcard.classList.remove('slide-in');
-        setTimeout(() => flashcard.classList.add('slide-in'), 10);
+    if (STATE.currentIndex >= STATE.cards.length - 1) {
+        showToast('នេះគឺជាកាតចុងក្រោយហើយ! 🎉', 'success');
+        return;
     }
+    
+    stopAudio();
+    STATE.currentIndex++;
+    updateCard();
+    updateProgress();
+    updateNavButtons();
+    addSlideAnimation();
 }
 
 function prevCard() {
-    if (currentIndex > 0) {
-        currentIndex--;
-        updateCard();
-        updateProgress();
-        updateNavButtons();
-        
-        const flashcard = document.getElementById('flashcard');
-        flashcard.classList.remove('slide-in');
-        setTimeout(() => flashcard.classList.add('slide-in'), 10);
+    if (STATE.currentIndex <= 0) {
+        showToast('នេះគឺជាកាតដំបូងហើយ! 📚', 'success');
+        return;
     }
+    
+    stopAudio();
+    STATE.currentIndex--;
+    updateCard();
+    updateProgress();
+    updateNavButtons();
+    addSlideAnimation();
+}
+
+function addSlideAnimation() {
+    if (!DOM.flashcard) return;
+    
+    DOM.flashcard.classList.remove('slide-in');
+    // Force reflow
+    void DOM.flashcard.offsetWidth;
+    DOM.flashcard.classList.add('slide-in');
 }
 
 function updateNavButtons() {
-    document.getElementById('prevBtn').disabled = currentIndex === 0;
-    document.getElementById('nextBtn').disabled = currentIndex === cards.length - 1;
+    if (DOM.prevBtn) {
+        DOM.prevBtn.disabled = STATE.currentIndex === 0;
+    }
+    if (DOM.nextBtn) {
+        DOM.nextBtn.disabled = STATE.currentIndex === STATE.cards.length - 1;
+    }
 }
 
-/* ── Progress ──────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   PROGRESS
+══════════════════════════════════════════════════════════════════════════ */
 function updateProgress() {
-    const progress = ((currentIndex + 1) / cards.length) * 100;
-    document.getElementById('progressFill').style.width = progress + '%';
-    document.getElementById('progressCount').innerText = (currentIndex + 1) + ' / ' + cards.length;
+    const progress = ((STATE.currentIndex + 1) / STATE.cards.length) * 100;
+    
+    if (DOM.progressFill) {
+        DOM.progressFill.style.width = `${progress}%`;
+    }
+    
+    if (DOM.progressCount) {
+        DOM.progressCount.textContent = `${STATE.currentIndex + 1} / ${STATE.cards.length}`;
+    }
 }
 
-/* ── Actions ───────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   ACTIONS
+══════════════════════════════════════════════════════════════════════════ */
 function shuffleCards() {
-    cards = [...database].sort(() => 0.5 - Math.random());
-    currentIndex = 0;
+    stopAudio();
+    
+    // Fisher-Yates shuffle algorithm
+    STATE.cards = [...DATABASE];
+    for (let i = STATE.cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [STATE.cards[i], STATE.cards[j]] = [STATE.cards[j], STATE.cards[i]];
+    }
+    
+    STATE.currentIndex = 0;
     updateCard();
     updateProgress();
     updateNavButtons();
+    
+    showToast('បានច្របល់កាតហើយ! 🔀', 'success');
 }
 
 function resetProgress() {
-    cards = [...database];
-    currentIndex = 0;
+    stopAudio();
+    
+    STATE.cards = [...DATABASE];
+    STATE.currentIndex = 0;
+    
     updateCard();
     updateProgress();
     updateNavButtons();
+    
+    showToast('បានចាប់ផ្តើមឡើងវិញ! ↻', 'success');
 }
 
-/* ── Audio Engine ────────────────────────────────────────────────────── */
-function setSpeed(val, btn) {
-    ttsSpeed = val;
-    document.querySelectorAll('.speed-toggle button')
-        .forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-}
-
-function setSpeaking(on) {
-    const btn = document.getElementById('speakBtn');
-    if (!btn) return;
-    if (on) btn.classList.add('speaking');
-    else btn.classList.remove('speaking');
+/* ══════════════════════════════════════════════════════════════════════════
+   AUDIO ENGINE
+══════════════════════════════════════════════════════════════════════════ */
+function setSpeed(value, btnElement) {
+    STATE.ttsSpeed = value;
+    
+    // Update active state
+    document.querySelectorAll('.speed-toggle button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    if (btnElement) {
+        btnElement.classList.add('active');
+    }
+    
+    console.log('🎚️ Speed set to:', value);
 }
 
 function playVoice() {
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio = null;
+    if (STATE.isPlaying) {
+        console.log('⏸️ Already playing, stopping...');
+        stopAudio();
+        return;
     }
-    window.speechSynthesis.cancel();
-    setSpeaking(false);
+    
+    const card = STATE.cards[STATE.currentIndex];
+    if (!card || !card.cn) {
+        console.error('❌ No text to speak');
+        return;
+    }
+    
+    stopAudio();
+    setSpeaking(true);
+    STATE.isPlaying = true;
+    
+    const text = card.cn;
+    const speed = Math.max(0.35, Math.min(STATE.ttsSpeed, 1.0));
+    
+    // Try Google TTS first
+    tryGoogleTTS(text, speed);
+}
 
-    const text = cards[currentIndex].cn;
-    const speed = Math.max(0.35, Math.min(ttsSpeed, 1.0));
-
+function tryGoogleTTS(text, speed) {
     const gttsSpeed = (speed * 0.9).toFixed(2);
-    const url = `https://translate.google.com/translate_tts`
-              + `?ie=UTF-8&q=${encodeURIComponent(text)}&tl=zh-CN`
-              + `&client=gtx&ttsspeed=${gttsSpeed}`;
-
+    const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=zh-CN&client=gtx&ttsspeed=${gttsSpeed}`;
+    
     const audio = new Audio(url);
     audio.playbackRate = 1.0;
-    currentAudio = audio;
-
-    setSpeaking(true);
-
-    audio.onended = () => { setSpeaking(false); currentAudio = null; };
-    audio.onerror = () => {
+    STATE.currentAudio = audio;
+    
+    audio.onended = () => {
         setSpeaking(false);
-        currentAudio = null;
+        STATE.isPlaying = false;
+        STATE.currentAudio = null;
+    };
+    
+    audio.onerror = (e) => {
+        console.warn('⚠️ Google TTS failed, falling back to Speech Synthesis');
+        setSpeaking(false);
+        STATE.isPlaying = false;
+        STATE.currentAudio = null;
         useSpeechSynthesis(text, speed);
     };
-
-    audio.play().catch(() => {
+    
+    audio.play().catch(err => {
+        console.warn('⚠️ Audio play failed:', err);
         setSpeaking(false);
-        currentAudio = null;
+        STATE.isPlaying = false;
+        STATE.currentAudio = null;
         useSpeechSynthesis(text, speed);
     });
 }
 
 function useSpeechSynthesis(text, speed) {
+    if (!window.speechSynthesis) {
+        console.error('❌ Speech Synthesis not supported');
+        showToast('មិនអាចចាក់សម្លេងបានទេ! 🔇', 'error');
+        return;
+    }
+    
     window.speechSynthesis.cancel();
     setSpeaking(true);
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'zh-CN';
-    u.rate = Math.max(0.3, speed * 0.85);
-
+    STATE.isPlaying = true;
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'zh-CN';
+    utterance.rate = Math.max(0.3, speed * 0.85);
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    
+    // Try to find best Chinese voice
     const voices = window.speechSynthesis.getVoices();
-    const cnVoice = voices.find(v =>
-        v.lang === 'zh-CN' && /Google|Microsoft|Meijia|Ting-Ting/.test(v.name)
+    const chineseVoice = voices.find(v => 
+        v.lang === 'zh-CN' && /Google|Microsoft|Meijia|Ting-Ting|Huihui/.test(v.name)
     ) || voices.find(v => v.lang === 'zh-CN')
       || voices.find(v => v.lang.startsWith('zh'));
-    if (cnVoice) u.voice = cnVoice;
+    
+    if (chineseVoice) {
+        utterance.voice = chineseVoice;
+        console.log('🎤 Using voice:', chineseVoice.name);
+    }
+    
+    utterance.onend = () => {
+        setSpeaking(false);
+        STATE.isPlaying = false;
+    };
+    
+    utterance.onerror = (e) => {
+        console.error('❌ Speech Synthesis error:', e);
+        setSpeaking(false);
+        STATE.isPlaying = false;
+        showToast('មិនអាចចាក់សម្លេងបានទេ! 🔇', 'error');
+    };
+    
+    window.speechSynthesis.speak(utterance);
+}
 
-    u.onend = () => setSpeaking(false);
-    u.onerror = () => setSpeaking(false);
-    window.speechSynthesis.speak(u);
+function stopAudio() {
+    // Stop HTML5 Audio
+    if (STATE.currentAudio) {
+        STATE.currentAudio.pause();
+        STATE.currentAudio.currentTime = 0;
+        STATE.currentAudio = null;
+    }
+    
+    // Stop Speech Synthesis
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+    
+    setSpeaking(false);
+    STATE.isPlaying = false;
+}
+
+function setSpeaking(isActive) {
+    if (!DOM.speakBtn) return;
+    
+    if (isActive) {
+        DOM.speakBtn.classList.add('speaking');
+        DOM.speakBtn.disabled = false;
+    } else {
+        DOM.speakBtn.classList.remove('speaking');
+        DOM.speakBtn.disabled = false;
+    }
 }
 
 function unlockAudio() {
+    // Unlock HTML5 Audio
     try {
-        const silence = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=");
-        silence.volume = 0;
-        silence.play().catch(() => {});
-    } catch(e) {}
+        const silentAudio = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=");
+        silentAudio.volume = 0;
+        silentAudio.play().then(() => {
+            console.log('✅ HTML5 Audio unlocked');
+        }).catch(() => {
+            console.log('⚠️ HTML5 Audio unlock failed (user interaction needed)');
+        });
+    } catch (e) {
+        console.warn('⚠️ Audio unlock error:', e);
+    }
+    
+    // Unlock Speech Synthesis
     try {
-        const u = new SpeechSynthesisUtterance(" ");
-        u.volume = 0;
-        window.speechSynthesis.speak(u);
-    } catch(e) {}
-    window.speechSynthesis.getVoices();
+        const utterance = new SpeechSynthesisUtterance(' ');
+        utterance.volume = 0;
+        window.speechSynthesis.speak(utterance);
+        console.log('✅ Speech Synthesis unlocked');
+    } catch (e) {
+        console.warn('⚠️ Speech Synthesis unlock error:', e);
+    }
+    
+    // Preload voices
+    if (window.speechSynthesis) {
+        window.speechSynthesis.getVoices();
+    }
 }
 
-/* ── Keyboard Support ──────────────────────────────────────────────────── */
-document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') nextCard();
-    if (e.key === 'ArrowLeft') prevCard();
-    if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        flipCard();
+/* ══════════════════════════════════════════════════════════════════════════
+   TOAST NOTIFICATION
+══════════════════════════════════════════════════════════════════════════ */
+function showToast(message, type = 'success') {
+    if (!DOM.toast) return;
+    
+    DOM.toast.textContent = message;
+    DOM.toast.className = `toast ${type}`;
+    
+    // Show toast
+    setTimeout(() => {
+        DOM.toast.classList.add('show');
+    }, 10);
+    
+    // Hide toast
+    setTimeout(() => {
+        DOM.toast.classList.remove('show');
+    }, 2500);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ERROR HANDLING
+══════════════════════════════════════════════════════════════════════════ */
+window.addEventListener('error', (e) => {
+    console.error('❌ Global error:', e.error);
+    showToast('កំហុសបានកើតឡើង! សូមព្យាយាមម្តងទៀត', 'error');
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+    console.error('❌ Unhandled promise rejection:', e.reason);
+});
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PAGE VISIBILITY
+══════════════════════════════════════════════════════════════════════════ */
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        stopAudio();
     }
 });
 
-/* ── Initialize App ─────────────────────────────────────────────────────── */
-init();
+/* ══════════════════════════════════════════════════════════════════════════
+   BEFORE UNLOAD
+══════════════════════════════════════════════════════════════════════════ */
+window.addEventListener('beforeunload', () => {
+    stopAudio();
+});
+
+/* ══════════════════════════════════════════════════════════════════════════
+   INITIALIZE APPLICATION
+══════════════════════════════════════════════════════════════════════════ */
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+console.log(`
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║   ██████╗  ██████╗   ███████╗ ██╗      █████╗  ███████╗██╗  ║
+║  ██╔═══██╗██╔════╝   ██╔════╝ ██║     ██╔══██╗██╔════╝██║  ║
+║  ██║   ██║██║        █████╗   ██║     ███████║███████╗██║  ║
+║  ██║▄▄ ██║██║        ██╔══╝   ██║     ██╔══██║╚════██║██║  ║
+║  ╚██████╔╝╚██████╗   ██║      ███████╗██║  ██║███████║██║  ║
+║   ╚══▀▀═╝  ╚═════╝   ╚═╝      ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ║
+║                                                               ║
+║              Professional Edition v2.0                        ║
+║         © 2024 - Built with ❤️ by AI Engineer                ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+`);
+
 </script>
 </body>
 </html>
-
