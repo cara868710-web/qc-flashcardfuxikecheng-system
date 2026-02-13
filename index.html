@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QC Flash Cards - Fixed Version</title>
+    <title>QC Flash Cards - iOS Optimized</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Orbitron:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         /* ═══════════════════════════════════════════════════════════════
-           QC FLASH CARDS - PROFESSIONAL EDITION v2.1
-           Fixed: Flip functionality on all cards
+           QC FLASH CARDS - iOS OPTIMIZED EDITION
+           Enhanced audio support for iPhone 13 Pro
         ═══════════════════════════════════════════════════════════════ */
 
         /* ─── Design Tokens ─────────────────────────────────────────────── */
@@ -43,6 +43,9 @@
             height: 100%;
             font-family: 'DM Sans', 'Battambang', sans-serif;
             overflow-x: hidden;
+            /* iOS specific */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         body {
@@ -194,6 +197,10 @@
             transition: all 0.2s var(--transition);
             position: relative;
             overflow: hidden;
+            /* iOS touch optimization */
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
         }
 
         .speak-btn:active {
@@ -239,6 +246,20 @@
             50% { height: 12px; }
         }
 
+        /* ─── Audio Status Indicator ────────────────────────────────────── */
+        .audio-status {
+            text-align: center;
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 16px;
+            min-height: 16px;
+            font-family: 'Battambang', sans-serif;
+        }
+
+        .audio-status.active {
+            color: var(--primary);
+        }
+
         /* ─── Speed Control ─────────────────────────────────────────────── */
         .speed-row {
             display: flex;
@@ -272,6 +293,10 @@
             font-weight: 700;
             color: var(--muted);
             transition: all 0.2s var(--transition);
+            /* iOS touch optimization */
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
         }
 
         .speed-toggle button.active {
@@ -279,9 +304,7 @@
             color: #fff;
         }
 
-        /* ─── Flash Card Container ──────────────────────────────────────── 
-            CRITICAL: ជៀសវាង animation conflicts
-        ───────────────────────────────────────────────────────────────── */
+        /* ─── Flash Card Container ──────────────────────────────────────── */
         .flashcard-container {
             perspective: 1000px;
             margin-bottom: 24px;
@@ -295,10 +318,8 @@
             height: 420px;
             transform-style: preserve-3d;
             transition: transform 0.6s var(--transition);
-            /* IMPORTANT: កុំប្រើ animation ផ្សេងទៀតនៅទីនេះ */
         }
 
-        /* CRITICAL FIX: Flip state */
         .flashcard.flipped {
             transform: rotateY(180deg);
         }
@@ -308,7 +329,7 @@
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            -webkit-backface-visibility: hidden; /* Safari */
+            -webkit-backface-visibility: hidden;
             background: var(--surface);
             border: 2px solid var(--border);
             border-radius: 20px;
@@ -405,11 +426,10 @@
             align-items: center;
             gap: 8px;
             z-index: 10;
-        }
-
-        .flip-btn:hover {
-            box-shadow: 0 8px 24px rgba(79,142,247,0.5);
-            transform: translateX(-50%) translateY(-2px);
+            /* iOS touch optimization */
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
         }
 
         .flip-btn:active {
@@ -441,6 +461,10 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            /* iOS touch optimization */
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
         }
 
         .btn-prev {
@@ -448,7 +472,7 @@
             color: var(--text);
         }
 
-        .btn-prev:hover:not(:disabled) {
+        .btn-prev:active:not(:disabled) {
             border-color: var(--primary);
             background: rgba(79,142,247,0.08);
         }
@@ -458,10 +482,6 @@
             color: #fff;
             border-color: var(--primary);
             box-shadow: 0 6px 20px rgba(79,142,247,0.3);
-        }
-
-        .btn-next:hover:not(:disabled) {
-            box-shadow: 0 8px 24px rgba(79,142,247,0.4);
         }
 
         .btn:active:not(:disabled) {
@@ -495,14 +515,15 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-        }
-
-        .btn-action:hover {
-            border-color: var(--primary);
-            background: rgba(79,142,247,0.08);
+            /* iOS touch optimization */
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
         }
 
         .btn-action:active {
+            border-color: var(--primary);
+            background: rgba(79,142,247,0.08);
             transform: scale(0.96);
         }
 
@@ -594,7 +615,7 @@
     <div class="brand-header">
         <div class="brand-badge">📚 FLASH CARDS</div>
         <div class="brand-title">QC<span>LEARN</span></div>
-        <div class="brand-sub">រៀនពាក្យ QC ជាមួយ Flash Cards</div>
+        <div class="brand-sub">QC Vocabulary Training System</div>
     </div>
 
     <!-- Main Card -->
@@ -603,7 +624,7 @@
         <!-- Progress -->
         <div class="progress-wrap">
             <div class="progress-meta">
-                <span class="progress-label">វឌ្ឍនភាព</span>
+                <span class="progress-label">Progress</span>
                 <span class="progress-count" id="progressCount">1 / 49</span>
             </div>
             <div class="progress-track">
@@ -621,9 +642,12 @@
             </button>
         </div>
 
+        <!-- Audio Status -->
+        <div class="audio-status" id="audioStatus">Click to listen</div>
+
         <!-- Speed Control -->
         <div class="speed-row">
-            <span class="speed-lbl">ល្បឿន:</span>
+            <span class="speed-lbl">Speed:</span>
             <div class="speed-toggle" id="speedToggle">
                 <button class="active" data-speed="1.0">1×</button>
                 <button data-speed="0.65">0.6×</button>
@@ -637,22 +661,22 @@
                 
                 <!-- Front Side -->
                 <div class="card-face card-front">
-                    <div class="card-label">中文</div>
+                    <div class="card-label">CHINESE</div>
                     <div class="chinese-display" id="chineseText">起泡</div>
                     <button class="flip-btn" id="flipBtnFront">
                         <span class="flip-icon">🔄</span>
-                        <span>មើលការបកប្រែ</span>
+                        <span>Show Translation</span>
                     </button>
                 </div>
                 
                 <!-- Back Side -->
                 <div class="card-face card-back">
-                    <div class="card-label">ភាសាខ្មែរ</div>
+                    <div class="card-label">KHMER</div>
                     <div class="khmer-display" id="khmerText">ពង / ចូលខ្យល់</div>
                     <img class="image-display" id="cardImage" src="" alt="" style="display:none;">
                     <button class="flip-btn" id="flipBtnBack">
                         <span class="flip-icon">🔄</span>
-                        <span>ត្រឡប់ក្រោយ</span>
+                        <span>Back to Chinese</span>
                     </button>
                 </div>
             </div>
@@ -660,92 +684,88 @@
 
         <!-- Navigation Buttons -->
         <div class="nav-buttons">
-            <button class="btn btn-prev" id="prevBtn">← មុន</button>
-            <button class="btn btn-next" id="nextBtn">បន្ទាប់ →</button>
+            <button class="btn btn-prev" id="prevBtn">← Previous</button>
+            <button class="btn btn-next" id="nextBtn">Next →</button>
         </div>
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <button class="btn-action" id="shuffleBtn">🔀 ច្របល់</button>
-            <button class="btn-action" id="resetBtn">↻ ចាប់ផ្តើមឡើងវិញ</button>
+            <button class="btn-action" id="shuffleBtn">🔀 Shuffle</button>
+            <button class="btn-action" id="resetBtn">↻ Reset</button>
         </div>
 
         <!-- Keyboard Hint -->
         <div class="keyboard-hint">
-            <kbd>←</kbd> <kbd>→</kbd> រុករក &nbsp;|&nbsp; <kbd>Space</kbd> ត្រឡប់
+            <kbd>←</kbd> <kbd>→</kbd> Navigate &nbsp;|&nbsp; <kbd>Space</kbd> Flip Card
         </div>
 
     </div>
 
     <!-- Footer -->
-    <div class="footer">© 2024 QC Flash Cards v2.1 - Fixed Edition</div>
+    <div class="footer">© 2024 QC Flash Cards - iOS Optimized Edition</div>
 </div>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     JAVASCRIPT - FIXED VERSION
-     Critical Fix: Flip functionality works on all cards
-═══════════════════════════════════════════════════════════════════════ -->
 <script>
 'use strict';
 
-console.log('🚀 QC Flash Cards v2.1 - FIXED EDITION');
+console.log('🚀 QC Flash Cards - iOS Optimized Edition');
 
 /* ═══════════════════════════════════════════════════════════════════════
    DATABASE
 ═══════════════════════════════════════════════════════════════════════ */
 const DATABASE = [
-    { cn: "起泡", km: "ពង / ចូលខ្យល់", img: "qipao.jpg" },
-    { cn: "标纸不良", km: "តែមមិនល្អ", img: "biaozhibuliang.jpg" },
-    { cn: "修补痕", km: "ស្នាមជួសជុល", img: "xiubuhen.jpg" },
-    { cn: "杂质", km: "ធូលី / កំទេចកំទី", img: "zhazhi.jpg" },
-    { cn: "脏污", km: "ប្រឡាក់", img: "zangwu.jpg" },
-    { cn: "标纸位置不对", km: "បិទតែមខុសទីតាំង", img: "biaozhiweizhibudui.jpg" },
-    { cn: "标纸不对称", km: "បិទតែមមិនស្មើគ្នា", img: "biaozhibuduiceng.jpg" },
-    { cn: "雾面", km: "ស្រអាប់", img: "wumian.jpg" },
-    { cn: "橘皮", km: "សំបកក្រូច", img: "jupi.jpg" },
-    { cn: "针孔", km: "រន្ធម្ជុល", img: "zhengkong.jpg" },
-    { cn: "消光不良", km: "ទឹកថ្នាំស្រអាប់មិនល្អ", img: "xiaoguangbuliang.jpg" },
-    { cn: "防漆不良", km: "ការពារទឹកថ្នាំមិនបានល្អ", img: "fangqibuliang.jpg" },
-    { cn: "工厂", km: "រោងចក្រ", img: "gongchang.jpg" },
-    { cn: "车间", km: "រោងជាង / អាគារ", img: "chejian.jpg" },
-    { cn: "办公室", km: "ការិយាល័យ", img: "bangongshi.jpg" },
-    { cn: "班长", km: "ប្រធានក្រុម", img: "banzhang.jpg" },
-    { cn: "翻译", km: "បកប្រែ", img: "fanyi.jpg" },
-    { cn: "注意安全", km: "ប្រយ័ត្នសុវត្ថិភាព", img: "zhuyianquan.jpg" },
-    { cn: "上班", km: "ចូលធ្វើការ", img: "shangban.jpg" },
-    { cn: "下班", km: "ចេញពីធ្វើការ", img: "xiaban.jpg" },
-    { cn: "请假", km: "សុំច្បាប់", img: "qingjia.jpg" },
-    { cn: "车架", km: "តួកង់", img: "chejia.jpg" },
-    { cn: "前叉", km: "ឆ្ពោះមុខ (Fork)", img: "qiancha.jpg" },
-    { cn: "车把", km: "ដៃកង់", img: "cheba.jpg" },
-    { cn: "车圈", km: "ខ្នងកង់", img: "chequan.jpg" },
-    { cn: "外胎", km: "សំបកកង់", img: "waitai.jpg" },
-    { cn: "脚踏", km: "ឈ្នាន់", img: "jiaota.jpg" },
-    { cn: "链条", km: "ច្រវាក់", img: "liantiao.jpg" },
-    { cn: "座垫", km: "កែប", img: "zuodian.jpg" },
-    { cn: "刹车", km: "ហ្វ្រាំង", img: "shache.jpg" },
-    { cn: "测量值", km: "តម្លៃវាស់ជាក់ស្តែង", img: "celiangzhi.jpg" },
-    { cn: "标准值", km: "តម្លៃស្តង់ដា", img: "biaozhunzhi.jpg" },
-    { cn: "上限", km: "ដែនកំណត់ លើ", img: "shangxian.jpg" },
-    { cn: "下限", km: "ដែនកំណត់ ក្រោម", img: "xiaxian.jpg" },
-    { cn: "趋势图", km: "ក្រាបនិន្នាការ", img: "qushitu.jpg" },
-    { cn: "合格", km: "ជាប់ (OK)", img: "hege.jpg" },
-    { cn: "不合格", km: "ធ្លាក់ (NG)", img: "buhege.jpg" },
-    { cn: "开裂", km: "ប្រេះ (Crack)", img: "kailie.jpg" },
-    { cn: "焊破", km: "ផ្សាធ្លុះ", img: "hanpo.jpg" },
-    { cn: "漏焊", km: "ភ្លេចផ្សារ", img: "louhan.jpg" },
-    { cn: "针眼", km: "ភ្នែកម្ជុល", img: "zhenyan.jpg" },
-    { cn: "凹陷", km: "កំពិត / ផត", img: "aoxian.jpg" },
-    { cn: "焊道偏心", km: "ផ្សារវៀច", img: "handaobianxin.jpg" },
-    { cn: "电击伤", km: "ឆេះម៉ាស", img: "dianjishang.jpg" },
-    { cn: "堆焊", km: "ផ្សារទូល (Overlap)", img: "duihan.jpg" },
-    { cn: "咬边", km: "ស៊ីសាច់បំពង់", img: "yaobian.jpg" },
-    { cn: "间隙", km: "ចន្លោះ / ហើប", img: "jianxi.jpg" },
-    { cn: "碰刮伤", km: "ប៉ះទង្គិច / កោស", img: "pengguashang.jpg" },
-    { cn: "焊渣", km: "កំទេចផ្សារ", img: "hanzha.jpg" }
+    { cn: "起泡", km: "ពង / ចូលខ្យល់", img: "" },
+    { cn: "标纸不良", km: "តែមមិនល្អ", img: "" },
+    { cn: "修补痕", km: "ស្នាមជួសជុល", img: "" },
+    { cn: "杂质", km: "ធូលី / កំទេចកំទី", img: "" },
+    { cn: "脏污", km: "ប្រឡាក់", img: "" },
+    { cn: "标纸位置不对", km: "បិទតែមខុសទីតាំង", img: "" },
+    { cn: "标纸不对称", km: "បិទតែមមិនស្មើគ្នា", img: "" },
+    { cn: "雾面", km: "ស្រអាប់", img: "" },
+    { cn: "橘皮", km: "សំបកក្រូច", img: "" },
+    { cn: "针孔", km: "រន្ធម្ជុល", img: "" },
+    { cn: "消光不良", km: "ទឹកថ្នាំស្រអាប់មិនល្អ", img: "" },
+    { cn: "防漆不良", km: "ការពារទឹកថ្នាំមិនបានល្អ", img: "" },
+    { cn: "工厂", km: "រោងចក្រ", img: "" },
+    { cn: "车间", km: "រោងជាង / អាគារ", img: "" },
+    { cn: "办公室", km: "ការិយាល័យ", img: "" },
+    { cn: "班长", km: "ប្រធានក្រុម", img: "" },
+    { cn: "翻译", km: "បកប្រែ", img: "" },
+    { cn: "注意安全", km: "ប្រយ័ត្នសុវត្ថិភាព", img: "" },
+    { cn: "上班", km: "ចូលធ្វើការ", img: "" },
+    { cn: "下班", km: "ចេញពីធ្វើការ", img: "" },
+    { cn: "请假", km: "សុំច្បាប់", img: "" },
+    { cn: "车架", km: "តួកង់", img: "" },
+    { cn: "前叉", km: "ឆ្ពោះមុខ (Fork)", img: "" },
+    { cn: "车把", km: "ដៃកង់", img: "" },
+    { cn: "车圈", km: "ខ្នងកង់", img: "" },
+    { cn: "外胎", km: "សំបកកង់", img: "" },
+    { cn: "脚踏", km: "ឈ្នាន់", img: "" },
+    { cn: "链条", km: "ច្រវាក់", img: "" },
+    { cn: "座垫", km: "កែប", img: "" },
+    { cn: "刹车", km: "ហ្វ្រាំង", img: "" },
+    { cn: "测量值", km: "តម្លៃវាស់ជាក់ស្តែង", img: "" },
+    { cn: "标准值", km: "តម្លៃស្តង់ដា", img: "" },
+    { cn: "上限", km: "ដែនកំណត់ លើ", img: "" },
+    { cn: "下限", km: "ដែនកំណត់ ក្រោម", img: "" },
+    { cn: "趋势图", km: "ក្រាបនិន្នាការ", img: "" },
+    { cn: "合格", km: "ជាប់ (OK)", img: "" },
+    { cn: "不合格", km: "ធ្លាក់ (NG)", img: "" },
+    { cn: "开裂", km: "ប្រេះ (Crack)", img: "" },
+    { cn: "焊破", km: "ផ្សាធ្លុះ", img: "" },
+    { cn: "漏焊", km: "ភ្លេចផ្សារ", img: "" },
+    { cn: "针眼", km: "ភ្នែកម្ជុល", img: "" },
+    { cn: "凹陷", km: "កំពិត / ផត", img: "" },
+    { cn: "焊道偏心", km: "ផ្សារវៀច", img: "" },
+    { cn: "电击伤", km: "ឆេះម៉ាស", img: "" },
+    { cn: "堆焊", km: "ផ្សារទូល (Overlap)", img: "" },
+    { cn: "咬边", km: "ស៊ីសាច់បំពង់", img: "" },
+    { cn: "间隙", km: "ចន្លោះ / ហើប", img: "" },
+    { cn: "碰刮伤", km: "ប៉ះទង្គិច / កោស", img: "" },
+    { cn: "焊渣", km: "កំទេចផ្សារ", img: "" }
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -757,6 +777,7 @@ let isFlipped = false;
 let currentAudio = null;
 let ttsSpeed = 1.0;
 let isPlaying = false;
+let audioUnlocked = false;
 
 /* ═══════════════════════════════════════════════════════════════════════
    DOM ELEMENTS
@@ -771,14 +792,14 @@ let prevBtnEl;
 let nextBtnEl;
 let speakBtnEl;
 let toastEl;
+let audioStatusEl;
 
 /* ═══════════════════════════════════════════════════════════════════════
    INITIALIZATION
 ═══════════════════════════════════════════════════════════════════════ */
 function init() {
-    console.log('🔧 Initializing...');
+    console.log('🔧 Initializing iOS optimized version...');
     
-    // Get DOM elements
     flashcardEl = document.getElementById('flashcard');
     chineseTextEl = document.getElementById('chineseText');
     khmerTextEl = document.getElementById('khmerText');
@@ -789,34 +810,27 @@ function init() {
     nextBtnEl = document.getElementById('nextBtn');
     speakBtnEl = document.getElementById('speakBtn');
     toastEl = document.getElementById('toast');
+    audioStatusEl = document.getElementById('audioStatus');
 
-    // Check if elements exist
     if (!flashcardEl) {
-        console.error('❌ Flashcard element not found!');
+        console.error('❌ Critical elements not found!');
         return;
     }
 
     console.log('✅ DOM elements loaded');
 
-    // Setup event listeners
     setupEventListeners();
-
-    // Initial render
     updateCard();
     updateProgress();
     updateNavButtons();
 
-    // Unlock audio
-    unlockAudio();
-
-    console.log('✅ App initialized successfully');
+    console.log('✅ App initialized');
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   EVENT LISTENERS - CRITICAL FIX!
+   EVENT LISTENERS
 ═══════════════════════════════════════════════════════════════════════ */
 function setupEventListeners() {
-    // FLIP BUTTONS - Use event delegation
     const flipBtnFront = document.getElementById('flipBtnFront');
     const flipBtnBack = document.getElementById('flipBtnBack');
     
@@ -834,21 +848,10 @@ function setupEventListeners() {
         });
     }
 
-    // Navigation buttons
-    if (prevBtnEl) {
-        prevBtnEl.addEventListener('click', prevCard);
-    }
-    
-    if (nextBtnEl) {
-        nextBtnEl.addEventListener('click', nextCard);
-    }
+    if (prevBtnEl) prevBtnEl.addEventListener('click', prevCard);
+    if (nextBtnEl) nextBtnEl.addEventListener('click', nextCard);
+    if (speakBtnEl) speakBtnEl.addEventListener('click', handleSpeakClick);
 
-    // Speak button
-    if (speakBtnEl) {
-        speakBtnEl.addEventListener('click', playVoice);
-    }
-
-    // Speed toggle
     const speedToggle = document.getElementById('speedToggle');
     if (speedToggle) {
         speedToggle.addEventListener('click', (e) => {
@@ -859,14 +862,12 @@ function setupEventListeners() {
         });
     }
 
-    // Action buttons
     const shuffleBtn = document.getElementById('shuffleBtn');
     const resetBtn = document.getElementById('resetBtn');
     
     if (shuffleBtn) shuffleBtn.addEventListener('click', shuffleCards);
     if (resetBtn) resetBtn.addEventListener('click', resetProgress);
 
-    // Keyboard
     document.addEventListener('keydown', handleKeyboard);
 
     console.log('✅ Event listeners attached');
@@ -891,44 +892,31 @@ function handleKeyboard(e) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   FLIP CARD - CRITICAL FIX!
+   FLIP CARD
 ═══════════════════════════════════════════════════════════════════════ */
 function flipCard() {
-    if (!flashcardEl) {
-        console.error('❌ Flashcard element not found!');
-        return;
-    }
+    if (!flashcardEl) return;
 
-    // Toggle flip state
     isFlipped = !isFlipped;
     
     if (isFlipped) {
         flashcardEl.classList.add('flipped');
-        console.log('🔄 Flipped to BACK');
     } else {
         flashcardEl.classList.remove('flipped');
-        console.log('🔄 Flipped to FRONT');
     }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   UPDATE CARD - CRITICAL FIX!
+   UPDATE CARD
 ═══════════════════════════════════════════════════════════════════════ */
 function updateCard() {
     const card = cards[currentIndex];
     
-    if (!card) {
-        console.error('❌ Card not found!');
-        return;
-    }
+    if (!card) return;
 
-    console.log(`📇 Card ${currentIndex + 1}:`, card.cn);
-
-    // Update content
     if (chineseTextEl) chineseTextEl.textContent = card.cn;
     if (khmerTextEl) khmerTextEl.textContent = card.km;
 
-    // Update image
     if (cardImageEl) {
         if (card.img) {
             cardImageEl.src = card.img;
@@ -941,17 +929,19 @@ function updateCard() {
         }
     }
 
-    // CRITICAL FIX: Reset flip state
     if (flashcardEl) {
         flashcardEl.classList.remove('flipped');
         isFlipped = false;
-        console.log('✅ Flip state reset');
     }
 
-    // Auto-play audio
+    // Auto-play after card loads (iOS friendly delay)
     setTimeout(() => {
-        playVoice();
-    }, 400);
+        if (!audioUnlocked) {
+            updateAudioStatus('Click button to listen');
+        } else {
+            playVoice();
+        }
+    }, 500);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -959,7 +949,7 @@ function updateCard() {
 ═══════════════════════════════════════════════════════════════════════ */
 function nextCard() {
     if (currentIndex >= cards.length - 1) {
-        showToast('នេះគឺជាកាតចុងក្រោយហើយ! 🎉', 'success');
+        showToast('This is the last card! 🎉', 'success');
         return;
     }
 
@@ -972,7 +962,7 @@ function nextCard() {
 
 function prevCard() {
     if (currentIndex <= 0) {
-        showToast('នេះគឺជាកាតដំបូងហើយ! 📚', 'success');
+        showToast('This is the first card! 📚', 'success');
         return;
     }
 
@@ -1020,7 +1010,7 @@ function shuffleCards() {
     updateProgress();
     updateNavButtons();
     
-    showToast('បានច្របល់កាតហើយ! 🔀', 'success');
+    showToast('Cards shuffled! 🔀', 'success');
 }
 
 function resetProgress() {
@@ -1033,12 +1023,24 @@ function resetProgress() {
     updateProgress();
     updateNavButtons();
     
-    showToast('បានចាប់ផ្តើមឡើងវិញ! ↻', 'success');
+    showToast('Progress reset! ↻', 'success');
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   AUDIO
+   AUDIO - iOS OPTIMIZED
+   Critical improvements for iPhone 13 Pro
 ═══════════════════════════════════════════════════════════════════════ */
+
+function updateAudioStatus(message, active = false) {
+    if (!audioStatusEl) return;
+    audioStatusEl.textContent = message;
+    if (active) {
+        audioStatusEl.classList.add('active');
+    } else {
+        audioStatusEl.classList.remove('active');
+    }
+}
+
 function setSpeed(value, btnElement) {
     ttsSpeed = value;
     
@@ -1048,6 +1050,47 @@ function setSpeed(value, btnElement) {
     
     if (btnElement) {
         btnElement.classList.add('active');
+    }
+}
+
+function handleSpeakClick() {
+    // First touch unlocks audio on iOS
+    if (!audioUnlocked) {
+        unlockAudioContext();
+    }
+    
+    playVoice();
+}
+
+function unlockAudioContext() {
+    console.log('🔓 Unlocking audio context for iOS...');
+    
+    // Create silent audio to unlock
+    const silentAudio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+    silentAudio.volume = 0.01;
+    
+    const playPromise = silentAudio.play();
+    
+    if (playPromise !== undefined) {
+        playPromise
+            .then(() => {
+                console.log('✅ Audio context unlocked');
+                audioUnlocked = true;
+                updateAudioStatus('Audio system ready');
+                silentAudio.pause();
+                silentAudio.remove();
+            })
+            .catch((error) => {
+                console.warn('⚠️ Audio unlock failed:', error);
+                updateAudioStatus('Please click again');
+            });
+    }
+    
+    // Also try Web Speech API unlock
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        const voices = window.speechSynthesis.getVoices();
+        console.log(`📢 Found ${voices.length} voices`);
     }
 }
 
@@ -1063,81 +1106,233 @@ function playVoice() {
     stopAudio();
     setSpeaking(true);
     isPlaying = true;
+    updateAudioStatus('Playing...', true);
 
     const text = card.cn;
-    const speed = Math.max(0.35, Math.min(ttsSpeed, 1.0));
+    const speed = Math.max(0.4, Math.min(ttsSpeed, 1.0));
 
-    tryGoogleTTS(text, speed);
+    // Try multiple audio sources for best iOS compatibility
+    tryMultipleAudioSources(text, speed);
+}
+
+async function tryMultipleAudioSources(text, speed) {
+    console.log(`🔊 Attempting to play: "${text}" at speed ${speed}`);
+    
+    // Method 1: Try Google TTS (works best on iOS when unlocked)
+    const googleSuccess = await tryGoogleTTS(text, speed);
+    if (googleSuccess) return;
+    
+    // Method 2: Try iSpeech (alternative TTS service)
+    const iSpeechSuccess = await tryISpeechTTS(text, speed);
+    if (iSpeechSuccess) return;
+    
+    // Method 3: Fallback to Web Speech API
+    console.log('📢 Falling back to Web Speech API');
+    useSpeechSynthesis(text, speed);
 }
 
 function tryGoogleTTS(text, speed) {
-    const gttsSpeed = (speed * 0.9).toFixed(2);
-    const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=zh-CN&client=gtx&ttsspeed=${gttsSpeed}`;
+    return new Promise((resolve) => {
+        try {
+            const speedParam = (speed * 0.95).toFixed(2);
+            // Use multiple Google TTS endpoints
+            const urls = [
+                `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=zh-CN&client=tw-ob&ttsspeed=${speedParam}`,
+                `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=zh-CN&client=gtx&ttsspeed=${speedParam}`
+            ];
 
-    const audio = new Audio(url);
-    currentAudio = audio;
+            let attemptCount = 0;
+            
+            function tryNextUrl() {
+                if (attemptCount >= urls.length) {
+                    console.log('❌ All Google TTS URLs failed');
+                    resolve(false);
+                    return;
+                }
 
-    audio.onended = () => {
-        setSpeaking(false);
-        isPlaying = false;
-        currentAudio = null;
-    };
+                const audio = new Audio(urls[attemptCount]);
+                currentAudio = audio;
 
-    audio.onerror = () => {
-        setSpeaking(false);
-        isPlaying = false;
-        currentAudio = null;
-        useSpeechSynthesis(text, speed);
-    };
+                audio.onloadeddata = () => {
+                    console.log('✅ Google TTS audio loaded');
+                };
 
-    audio.play().catch(() => {
-        setSpeaking(false);
-        isPlaying = false;
-        currentAudio = null;
-        useSpeechSynthesis(text, speed);
+                audio.onended = () => {
+                    console.log('✅ Google TTS playback complete');
+                    setSpeaking(false);
+                    isPlaying = false;
+                    currentAudio = null;
+                    updateAudioStatus('Completed');
+                    resolve(true);
+                };
+
+                audio.onerror = (e) => {
+                    console.warn(`⚠️ Google TTS attempt ${attemptCount + 1} failed:`, e);
+                    attemptCount++;
+                    tryNextUrl();
+                };
+
+                audio.play()
+                    .then(() => {
+                        console.log('✅ Google TTS playing');
+                    })
+                    .catch((e) => {
+                        console.warn(`⚠️ Google TTS play failed:`, e);
+                        attemptCount++;
+                        tryNextUrl();
+                    });
+            }
+
+            tryNextUrl();
+        } catch (error) {
+            console.error('❌ Google TTS error:', error);
+            resolve(false);
+        }
+    });
+}
+
+function tryISpeechTTS(text, speed) {
+    return new Promise((resolve) => {
+        try {
+            // iSpeech free API (backup option)
+            const speedParam = Math.round(speed * 10); // iSpeech uses -10 to 10 scale
+            const url = `https://www.ispeech.org/p/generic/getaudio?text=${encodeURIComponent(text)}&voice=zhcnfemale&speed=${speedParam}&action=convert`;
+            
+            const audio = new Audio(url);
+            currentAudio = audio;
+
+            audio.onended = () => {
+                console.log('✅ iSpeech TTS complete');
+                setSpeaking(false);
+                isPlaying = false;
+                currentAudio = null;
+                updateAudioStatus('Completed');
+                resolve(true);
+            };
+
+            audio.onerror = () => {
+                console.warn('⚠️ iSpeech TTS failed');
+                resolve(false);
+            };
+
+            audio.play()
+                .then(() => {
+                    console.log('✅ iSpeech TTS playing');
+                })
+                .catch(() => {
+                    resolve(false);
+                });
+        } catch (error) {
+            console.error('❌ iSpeech TTS error:', error);
+            resolve(false);
+        }
     });
 }
 
 function useSpeechSynthesis(text, speed) {
-    if (!window.speechSynthesis) return;
+    if (!window.speechSynthesis) {
+        console.error('❌ Speech Synthesis not supported');
+        setSpeaking(false);
+        isPlaying = false;
+        updateAudioStatus('Not supported');
+        return;
+    }
 
     window.speechSynthesis.cancel();
-    setSpeaking(true);
-    isPlaying = true;
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'zh-CN';
-    utterance.rate = Math.max(0.3, speed * 0.85);
+    utterance.rate = Math.max(0.3, Math.min(speed * 0.9, 2.0));
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
 
-    const voices = window.speechSynthesis.getVoices();
-    const cnVoice = voices.find(v => v.lang === 'zh-CN');
-    if (cnVoice) utterance.voice = cnVoice;
+    // Get available voices
+    let voices = window.speechSynthesis.getVoices();
+    
+    // iOS sometimes needs a moment to load voices
+    if (voices.length === 0) {
+        window.speechSynthesis.addEventListener('voiceschanged', () => {
+            voices = window.speechSynthesis.getVoices();
+            setVoiceAndSpeak();
+        }, { once: true });
+        
+        // Trigger voice loading
+        window.speechSynthesis.getVoices();
+    } else {
+        setVoiceAndSpeak();
+    }
 
-    utterance.onend = () => {
-        setSpeaking(false);
-        isPlaying = false;
-    };
+    function setVoiceAndSpeak() {
+        voices = window.speechSynthesis.getVoices();
+        console.log(`📢 Available voices: ${voices.length}`);
+        
+        // Find best Chinese voice
+        const chineseVoice = voices.find(v => 
+            v.lang === 'zh-CN' || 
+            v.lang === 'zh-Hans' || 
+            v.lang.startsWith('zh')
+        );
+        
+        if (chineseVoice) {
+            utterance.voice = chineseVoice;
+            console.log(`✅ Using voice: ${chineseVoice.name} (${chineseVoice.lang})`);
+        } else {
+            console.warn('⚠️ No Chinese voice found, using default');
+        }
 
-    utterance.onerror = () => {
-        setSpeaking(false);
-        isPlaying = false;
-    };
+        utterance.onstart = () => {
+            console.log('✅ Speech started');
+            updateAudioStatus('Speaking...', true);
+        };
 
-    window.speechSynthesis.speak(utterance);
+        utterance.onend = () => {
+            console.log('✅ Speech complete');
+            setSpeaking(false);
+            isPlaying = false;
+            updateAudioStatus('Completed');
+        };
+
+        utterance.onerror = (e) => {
+            console.error('❌ Speech error:', e);
+            setSpeaking(false);
+            isPlaying = false;
+            updateAudioStatus('Error occurred');
+        };
+
+        try {
+            window.speechSynthesis.speak(utterance);
+            console.log('🗣️ Speech synthesis initiated');
+        } catch (error) {
+            console.error('❌ Speech synthesis failed:', error);
+            setSpeaking(false);
+            isPlaying = false;
+            updateAudioStatus('Cannot play');
+        }
+    }
 }
 
 function stopAudio() {
     if (currentAudio) {
-        currentAudio.pause();
-        currentAudio = null;
+        try {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            currentAudio = null;
+        } catch (e) {
+            console.warn('⚠️ Error stopping audio:', e);
+        }
     }
 
     if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
+        try {
+            window.speechSynthesis.cancel();
+        } catch (e) {
+            console.warn('⚠️ Error canceling speech:', e);
+        }
     }
 
     setSpeaking(false);
     isPlaying = false;
+    updateAudioStatus('Stopped');
 }
 
 function setSpeaking(active) {
@@ -1147,18 +1342,6 @@ function setSpeaking(active) {
         speakBtnEl.classList.add('speaking');
     } else {
         speakBtnEl.classList.remove('speaking');
-    }
-}
-
-function unlockAudio() {
-    try {
-        const silence = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=");
-        silence.volume = 0;
-        silence.play().catch(() => {});
-    } catch(e) {}
-
-    if (window.speechSynthesis) {
-        window.speechSynthesis.getVoices();
     }
 }
 
@@ -1184,6 +1367,7 @@ if (document.readyState === 'loading') {
     init();
 }
 
+console.log('📱 iOS Optimized version loaded');
 </script>
 </body>
 </html>
