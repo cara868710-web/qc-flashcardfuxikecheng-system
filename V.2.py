@@ -10,8 +10,8 @@ from datetime import datetime
 #   XDS Smart QC Assistant Bot — Version 3.0
 # ════════════════════════════════════════════
 
-API_TOKEN = '8629154594:AAGLk72HQU73UbDOxAq_5BL3Sg6mwc9n6jY'
-TARGET_GROUP_ID = '-5104865599'
+API_TOKEN = 
+TARGET_GROUP_ID = 
 
 bot = telebot.TeleBot(API_TOKEN)
 
